@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "umcp": {
+      "command": "node",
+      "args": ["C:/UMCP/src/index.js", "--artifacts", "C:/UMCP/artifacts"],
+      "env": { "UMCP_HEADLESS": "false" }
+    }
+  }
+}

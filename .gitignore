@@ -1,0 +1,9 @@
+node_modules/
+artifacts/
+test-results/
+.superpowers/
+*.har
+!test/fixtures/*.har
+.env
+*.log
+coverage/

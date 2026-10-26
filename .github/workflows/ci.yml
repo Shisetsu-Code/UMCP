@@ -1,0 +1,54 @@
+name: UMCP verification
+on:
+  push:
+    branches: [main, 'feat/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: umcp-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  core:
+    name: MCP, browser, HTTP and WS
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      - name: Behavior tests and actual stdio client
+        run: npm test
+  live:
+    name: Demo ${{ matrix.target }}
+    needs: core
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        target: [belatra, playtech-gpas, playtech-ngm, playson, rubyplay, elk, gamesglobal, push]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Observe public demo with UMCP
+        run: node scripts/live-smoke.js '${{ matrix.target }}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: umcp-live-${{ matrix.target }}
+          path: artifacts/live/
+          retention-days: 7
