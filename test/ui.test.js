@@ -203,3 +203,22 @@ test('truncated page text preserves stable controls while actual control limits 
   assert.equal(limited.stable,false);
   assert.ok(limited.warnings.some(w=>w.includes('Control output limited')));
 });
+
+test('declarative click spans expose delegated launch controls and reveal a popup canvas on real click',async t=>{
+  const page=await fixture(t,`<span id="launch" style="display:inline-block;width:120px;height:40px" data-interactions='[{"trigger":"click","action":"show","target":"popup","templateId":"39577"}]'>Play Demo</span>
+    <span data-interactions='[{"trigger":"pointerdown"}]'>Pointer down</span><span data-interactions='[{"trigger":"pointerup"}]'>Pointer up</span>
+    <span data-interactions='not valid json'>Malformed declaration</span>
+    <span data-interactions='[{"trigger":"mouseover","action":"show"}]'>Hover only</span>
+    <span aria-disabled="true" data-interactions='[{"trigger":"pointerdown"}]'>Disabled declaration</span>
+    <span style="display:none" data-interactions='[{"trigger":"pointerup"}]'>Hidden declaration</span>
+    <span id="covered-declaration" style="position:absolute;left:300px;top:100px;width:100px;height:30px" data-interactions='[{"trigger":"click"}]'>Covered declaration</span><div style="position:absolute;left:300px;top:100px;width:100px;height:30px;z-index:2;background:red"></div>
+    <div id="popup" style="visibility:hidden;pointer-events:none"><canvas width="400" height="250"></canvas></div>
+    <script>document.addEventListener('click',event=>{if(event.target.closest('#launch')){const popup=document.querySelector('#popup');popup.style.visibility='visible';popup.style.pointerEvents='auto'}})</script>`);
+  const initial=await ui.detectUI(page);
+  assert.deepEqual(initial.controls.map(c=>c.label),['Play Demo','Pointer down','Pointer up']);
+  assert.equal(initial.canvases.length,0);
+  const launch=initial.controls[0];assert.equal(launch.source,'dom');assert.ok(launch.confidence<0.8);
+  await page.mouse.click(launch.center.x,launch.center.y);
+  const opened=await ui.detectUI(page);
+  assert.equal(opened.canvases.length,1);assert.equal(opened.needsVision,true);
+});

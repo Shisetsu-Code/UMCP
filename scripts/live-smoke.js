@@ -16,7 +16,7 @@ await mkdir(base,{recursive:true});
 const safeUrl=publicUrl;
 const sanitize=value=>{
   if(Array.isArray(value))return value.map(sanitize);
-  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).filter(([k])=>!['buffer','visibleText'].includes(k)).map(([k,v])=>[k,/url|uri/i.test(k)&&typeof v==='string'&&/^https?:/.test(v)?safeUrl(v):sanitize(v)]));
+  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).filter(([k])=>!['buffer','visibleText'].includes(k)).map(([k,v])=>[k,/url|uri/i.test(k)&&typeof v==='string'&&/^(?:https?|wss?):/.test(v)?safeUrl(v):sanitize(v)]));
   return value;
 };
 const results=[];
@@ -30,8 +30,14 @@ for(const target of chosen){
   try{
     const opened=await service.open({url:target.url,timeoutMs:45000,captureBodies:'activity',maxEntries:5000});
     const sessionId=opened.sessionId;report.measurements.openMs=Math.round(performance.now()-started);report.navigationError=opened.navigationError;
-    let obs,blocked=false;const clicked=new Set();
+    let obs,blocked=false,launchScrolls=0;const clicked=new Set();
+    const checkpoint=async label=>{
+      const shot=await service.screenshot({sessionId,preset:'low',overlay:false});
+      await copyFile(shot.path,join(dir,`checkpoint-${label}.jpeg`));
+    };
+    await checkpoint('opened');
     for(let round=0;round<14;round++){
+      if(performance.now()-started>110000){report.limitations.push('Stopped repeated observations at the soft time budget; retained partial evidence.');break;}
       if(opened.navigationError&&!/timeout/i.test(opened.navigationError)&&round===0){report.status='navigation-failed';report.limitations.push('Navigation failed; a browser error page is not a loaded game.');break;}
       const current=service._session(sessionId);const page=current.pages.get(current.activePageId).page;
       const text=(await Promise.all(page.frames().slice(0,20).map(f=>f.locator('body').innerText({timeout:1000}).catch(()=>'')))).join('\n').slice(0,20000).replace(/\s+/g,' ');
@@ -48,6 +54,10 @@ for(const target of chosen){
       }
       const before=performance.now();obs=await service.observe({sessionId,samples:1,maxControls:300});
       report.measurements.observeMs=Math.round(performance.now()-before);
+      await writeFile(join(dir,'last-observation.json'),JSON.stringify(sanitize(obs),null,2));
+      const progress={round,elapsedMs:Math.round(performance.now()-started),observeMs:report.measurements.observeMs,controls:obs.controls.length,canvases:obs.canvases.length,warnings:obs.warnings};
+      (report.progress??=[]).push(progress);
+      console.log(JSON.stringify({progress:{target:target.id,...progress}}));
       const stats=await service.network({sessionId,operation:'stats'});
       const endpoint=await service.network({sessionId,operation:'query',urlIncludes:target.expectedEndpoint,limit:100});
       report.expectedEndpointRequested=endpoint.entries.length>0;
@@ -67,15 +77,26 @@ for(const target of chosen){
         await service.act({sessionId,kind:'click',controlId:safeControl.id,observationId:obs.observationId,settleMs:500,label:'smoke-public-launch'});
         clicked.add(safeControl.label);report.steps.push({kind:'control-click',label:safeControl.label,source:safeControl.source});
         const pages=await service.pages({sessionId});if(pages.pages.length>1)await service.pages({sessionId,selectPageId:pages.pages.at(-1).pageId});
-      }else if(meaningfulCanvas&&report.expectedEndpointObserved&&round>=3){report.status='game-observed';break;}
+        await checkpoint(`step-${report.steps.length}`);
+      }else if(meaningfulCanvas&&report.expectedEndpointObserved&&(round>=3||performance.now()-started>=8000)){report.status='game-observed';break;}
+      else if(target.scrollForLaunch&&!meaningfulCanvas&&round>=1&&launchScrolls<2){
+        await service.act({sessionId,kind:'scroll',deltaY:480,settleMs:500,label:'smoke-launch-scroll'});launchScrolls++;
+        report.steps.push({kind:'launch-scroll',deltaY:480});await checkpoint(`scroll-${launchScrolls}`);
+      }
       else await service.act({sessionId,kind:'wait',waitMs:2000});
       if(stats.httpEntries===0&&round>2)break;
     }
-    obs=await service.observe({sessionId,samples:3,intervalMs:500,maxControls:300});
+    const finalSamples=(report.measurements.observeMs??0)>5000||performance.now()-started>100000?1:3;
+    if(finalSamples===1)report.limitations.push('Slow observation: final snapshot uses one sample and makes no temporal stability claim.');
+    obs=await service.observe({sessionId,samples:finalSamples,intervalMs:500,maxControls:300});
     report.observation={controls:obs.controls.length,bySource:Object.fromEntries(['dom','engine','manual'].map(source=>[source,obs.controls.filter(c=>c.source===source).length])),canvases:obs.canvases.length,engines:obs.engines,needsVision:obs.needsVision,stable:obs.stable,frames:obs.frames.length,warnings:obs.warnings};
-    if(report.status==='error')report.status=blocked?'external-block':obs.canvases.some(c=>c.width>=250&&c.height>=150)?'canvas-observed':'no-game-surface';
+    const finalEndpoint=await service.network({sessionId,operation:'query',urlIncludes:target.expectedEndpoint,limit:100});
+    report.expectedEndpointRequested=finalEndpoint.entries.length>0;
+    report.endpointEvidence=successfulEndpointEntries(finalEndpoint.entries,target.expectedEndpoint).slice(0,10);
+    report.expectedEndpointObserved=report.endpointEvidence.length>0;
+    if(report.status==='error')report.status=blocked?'external-block':obs.canvases.some(c=>c.width>=250&&c.height>=150)?(report.expectedEndpointObserved?'game-observed':'canvas-observed'):'no-game-surface';
     if(report.status==='canvas-observed')report.limitations.push('Canvas observed without successful expected-endpoint evidence; game initialization remains unverified.');
-    const lowStart=performance.now();const low=await service.screenshot({sessionId,preset:'low',overlay:true});report.measurements.lowScreenshotMs=Math.round(performance.now()-lowStart);
+    const lowStart=performance.now();const low=await service.screenshot({sessionId,preset:'low',overlay:false});report.measurements.lowScreenshotMs=Math.round(performance.now()-lowStart);
     const highStart=performance.now();const high=await service.screenshot({sessionId,preset:'high'});report.measurements.highScreenshotMs=Math.round(performance.now()-highStart);
     await copyFile(low.path,join(dir,low.name));await copyFile(high.path,join(dir,high.name));
     report.images={low:{name:low.name,width:low.width,height:low.height,bytes:low.bytes},high:{name:high.name,width:high.width,height:high.height,bytes:high.bytes},byteReductionPercent:Math.round((1-low.bytes/high.bytes)*1000)/10};

@@ -112,6 +112,18 @@ function inspectDocument({ limit, textLimit=1000 }) {
     let p=hit;for(let i=0;p&&i<20;i++,p=p.parentElement||p.getRootNode()?.host)if(p===el)return true;
     return false;
   }
+  let declarativeInteractionsLimited=false;
+  const declarativePointer=el=>{
+    const raw=el.getAttribute('data-interactions');
+    if(!raw)return false;
+    if(raw.length>8192){declarativeInteractionsLimited=true;return false;}
+    try{
+      const interactions=JSON.parse(raw);
+      if(!Array.isArray(interactions))return false;
+      if(interactions.length>32)declarativeInteractionsLimited=true;
+      return interactions.slice(0,32).some(entry=>entry&&typeof entry==='object'&&['click','pointerdown','pointerup'].includes(entry.trigger));
+    }catch{return false;}
+  };
   const selector=el=>el.id?`[id=${JSON.stringify(el.id)}]`:undefined;
   const push=(object,source,kind,name,rect,confidence,extra={})=>{
     if(controls.length>=limit)return;
@@ -135,9 +147,11 @@ function inspectDocument({ limit, textLimit=1000 }) {
     const native=['BUTTON','SELECT','TEXTAREA','SUMMARY'].includes(tag)||(tag==='INPUT'&&el.type!=='hidden')||(tag==='A'&&el.hasAttribute('href'));
     const semantic=['button','link','checkbox','radio','switch','menuitem','tab','slider','spinbutton','textbox','combobox','option'].includes(role)||el.isContentEditable;
     const listener=(state.listeners.get(el)||[]).some(e=>!e.signal?.aborted)||['onclick','onpointerdown','onmousedown','ontouchstart'].some(k=>typeof el[k]==='function');
-    if(!(native||semantic||listener)||!visible(el,rect))continue;
-    push(el,'dom',role||tag.toLowerCase(),label(el),rect,native||semantic?0.98:0.8,{selector:selector(el)});
+    const declared=declarativePointer(el)&&!el.hasAttribute('disabled');
+    if(!(native||semantic||listener||declared)||!visible(el,rect))continue;
+    push(el,'dom',role||tag.toLowerCase(),label(el),rect,native||semantic?0.98:listener?0.8:0.65,{selector:selector(el)});
   }
+  if(declarativeInteractionsLimited)warnings.push('Declarative interaction inspection limited to 8192 characters and 32 entries per element');
   if(visited>=MAX_NODES)warnings.push(`DOM traversal limited to ${MAX_NODES} nodes`);
   if(controls.length>=limit)warnings.push(`Control output limited to ${limit}`);
 
@@ -322,7 +336,7 @@ export async function observeStable(page,{samples=3,intervalMs=2000,tolerancePx=
   // Stability describes actionable controls. Truncated/unavailable prose retains
   // its warning and needsVision signal but does not make control coverage partial.
   // Only frame inspection failures or actual traversal/control limits do that.
-  const affectsControlIntegrity=warning=>/^(?:Frame traversal limited|Frame \d+ unavailable:)|(?:^|: )(?:DOM traversal limited|Scene traversal limited|Control output limited)/.test(warning);
+  const affectsControlIntegrity=warning=>/^(?:Frame traversal limited|Frame \d+ unavailable:)|(?:^|: )(?:DOM traversal limited|Scene traversal limited|Control output limited|Declarative interaction inspection limited)/.test(warning);
   const complete=observations.every(o=>!o.warnings.some(affectsControlIntegrity));
   const finishedAt=Date.now();
   return {...last,controls:stableControls,stable:unstableControls.length===0&&documentsMatch&&complete,unstableControls,samples,timing:{startedAt,finishedAt,elapsedMs:finishedAt-startedAt,intervalMs},warnings:[...new Set(observations.flatMap(o=>o.warnings))]};

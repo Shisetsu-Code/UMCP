@@ -90,7 +90,7 @@ Para hacer click en el píxel `(300,180)` de una imagen:
 
 ## Detección de interfaz: alcance real
 
-- DOM visible y accionable; atributos ARIA, controles nativos, links y listeners de puntero. Texto visible de carga/error acotado a 1.000 caracteres por frame y 8.000 en total, separado de los controles.
+- DOM visible y accionable; atributos ARIA, controles nativos, links, listeners de puntero e interacciones declarativas `data-interactions` de click/pointer. Las declarativas tienen menor confianza y no ejecutan código durante la inspección. Texto visible de carga/error acotado a 1.000 caracteres por frame y 8.000 en total, separado de los controles.
 - Shadow DOM abierto, iframes anidados, bordes, escala y oclusión del centro del control.
 - Adaptadores acotados para raíces de **PixiJS, Phaser, CreateJS y Laya** accesibles desde el documento. Pixi/Phaser/CreateJS se ejercitan con escenas de prueba; Laya todavía no tiene verificación con un runtime real.
 - Canvas: área visible y texto 2D observado durante el dibujo. El texto no se convierte automáticamente en un botón.

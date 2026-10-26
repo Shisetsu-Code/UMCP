@@ -2,13 +2,13 @@
 
 ## Estado
 
-Implementación inicial: [`3d8a35e`](https://github.com/Shisetsu-Code/UMCP/commit/3d8a35ee9b1255e2d726d4731b8deabbaf9e72ca). Primera corrida de GitHub Actions: [40368852598](https://github.com/Shisetsu-Code/UMCP/actions/runs/40368852598). Su núcleo pasó 47 pruebas; las demos encontraron bloqueos externos, un launcher incompleto y dos instalaciones de paquetes que agotaron su tiempo. Una segunda corrida verificará las correcciones descritas abajo; los proveedores siguen pendientes de validación final.
+Implementación inicial: [`3d8a35e`](https://github.com/Shisetsu-Code/UMCP/commit/3d8a35ee9b1255e2d726d4731b8deabbaf9e72ca). Primera corrida: [40368852598](https://github.com/Shisetsu-Code/UMCP/actions/runs/40368852598). La [segunda corrida](https://github.com/Shisetsu-Code/UMCP/actions/runs/40371059147) verificó 52 pruebas del núcleo en 5,71 s y cargó las introducciones de Playtech GPAS, Playtech NGM y ELK; se revisaron sus screenshots. Belatra, Playson, Games Global y Push devolvieron bloqueos. RubyPlay inicializó red pero agotó el tiempo sin abrir su popup. La siguiente corrida verifica la corrección del botón declarativo y conserva capturas intermedias.
 
 ## Pruebas locales
 
 Se usa Chromium 156.0.8078.4 correspondiente a Playwright 1.64.1. El ejecutor local requiere una ruta de navegador explícita; la CI instala la distribución fijada de Playwright.
 
-**52/52 pruebas aprobadas; 0 fallidas, 0 omitidas.** La corrida local con las correcciones completó en 8,41 s; el chequeo de sintaxis también pasó. Este tiempo es de esta máquina y no una garantía de rendimiento de cada juego.
+**53 pruebas locales; 0 fallidas, 0 omitidas** después de la corrección declarativa de RubyPlay. El chequeo de sintaxis también pasó. La corrida anterior de 52 pruebas completó en 8,41 s; los tiempos dependen de esta máquina y no son una garantía de rendimiento de cada juego.
 
 Se verificó con Chromium real el flujo integrado de observación, screenshot reducido, click por coordenadas de imagen, navegación y rechazo de referencias viejas; HTTP/WS de texto/binario; y MCP initialize/list/tools/call/resources por stdio.
 
@@ -21,7 +21,7 @@ Se verificó con Chromium real el flujo integrado de observación, screenshot re
 | Protocolos/CLI | 8 | Ejemplos sintéticos de siete familias, XML anidado, HAR sin frames, CLI y protección de originales. |
 | Evidencia pública | 1 | Exclusión de cuerpos opacos, headers, valores de query e identificadores WS. |
 | Evidencia de demo | 1 | Rechaza respuestas 403, peticiones pendientes, recursos estáticos, coincidencias solo en query y WS rechazados. |
-| UI | 15 | DOM/listeners/oclusiones, iframes anidados/escalados/reflejados, escenas, estabilidad, texto visible acotado y semántica de instrumentación. |
+| UI | 16 | DOM/listeners/oclusiones, interacciones declarativas delegadas, iframes anidados/escalados/reflejados, escenas, estabilidad, texto visible acotado y semántica de instrumentación. |
 
 ## Revisión y correcciones
 
@@ -43,6 +43,8 @@ El intento local contra Push Gaming encontró `ERR_CERT_AUTHORITY_INVALID` en la
 - El smoke lee las pantallas de bloqueo dentro de iframes y reconoce los controles de edad/cookies/PLAY observados en ELK.
 - El éxito del smoke exige un canvas y evidencia de endpoint: HTTP terminado con 2xx y tipo de actividad, o WS con frames. Una solicitud pendiente o un canvas aislado no aprueba el juego.
 - CI fija Ubuntu 24.04, instala Chromium sin volver a descargar todos los paquetes del sistema, agrupa las demos en dos jobs y limita cada target a 180 s.
+- RubyPlay declara su botón `Play Demo` como un `span` con `data-interactions`, manejado por un listener delegado. El detector ahora reconoce esa declaración acotada, con menor confianza. La regresión prueba un click real que abre un popup y pasa de cero a un canvas visible.
+- El smoke conserva screenshots tempranos y observaciones parciales. Permite scroll para alcanzar el launcher RubyPlay y reduce el muestreo final cuando la observación es lenta, sin afirmar estabilidad temporal en ese caso.
 
 ## Criterios
 
