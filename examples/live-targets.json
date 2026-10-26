@@ -1,6 +1,6 @@
 [
   {"id":"belatra","family":"Belatra","game":"20 Super Stars","url":"https://demo.bltrm.com/belatra/demo?game=super_stars&language=es","expectedEndpoint":"/game"},
-  {"id":"playtech-gpas","family":"Playtech GPAS","game":"CollectOrbs Wild West Wilds","url":"https://gpas-games.playtechone.com/gpasclient.html?game=gpas_trgems_pop","expectedEndpoint":"/socket.io/"},
+  {"id":"playtech-gpas","family":"Playtech GPAS","game":"CollectOrbs Wild West Wilds","url":"https://gpas-games.playtechone.com/gpasclient.html?game=gpas_trgems_pop#casino=playtechhorizon&imsgame=gpas_trgems_pop&preferedmode=offline&real=0&crosslaunchurl=https%3A%2F%2Fcachedownload.playtechone.com%2Fngmdesktop%2Fcasinoclient.html%3Fgame%3D%5Bgame%5D%26preferedmode%3Doffline%26real%3D0","expectedEndpoint":"/socket.io/"},
   {"id":"playtech-ngm","family":"Playtech NGM","game":"Frankie Dettori Sporting Legends","url":"https://cachedownload.playtechone.com/ngmdesktop/casinoclient.html?game=fdtsl&real=0&preferedmode=offline","expectedEndpoint":"/socket.io/"},
   {"id":"playson","family":"Playson","game":"25 Cookies Hit the Bonus","url":"https://playson.com/game/25-cookies-hit-the-bonus","expectedEndpoint":"/connect"},
   {"id":"rubyplay","family":"RubyPlay","game":"Frankenstein Triple Volt","url":"https://rubyplay.com/games/frankenstein-triple-volt/","expectedEndpoint":"/gameserver/demo"},

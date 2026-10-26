@@ -70,9 +70,17 @@ export async function installInstrumentation(context) {
   await context.addInitScript(instrumentDocument);
 }
 
-function inspectDocument({ limit }) {
+function inspectDocument({ limit, textLimit=1000 }) {
   const state=globalThis.__umcpUIObservationV1;
   const warnings=[];const controls=[];const canvases=[];const engines=[];
+  let visibleText='',visibleTextTruncated=false;
+  try {
+    // innerText is the browser's rendered text, never input.value, source,
+    // textContent or page HTML. Hidden bodies otherwise fall back to textContent.
+    const body=document.body,html=document.documentElement;
+    const rendered=body&&[body,html].every(el=>{const style=getComputedStyle(el);return style.display!=='none'&&style.visibility!=='hidden'&&style.visibility!=='collapse'&&Number(style.opacity)>0;});
+    if(rendered){const text=body.innerText.trim();visibleTextTruncated=text.length>textLimit;visibleText=text.slice(0,textLimit);}
+  }catch(error){warnings.push(`Visible text unavailable: ${error.message}`);}
   let visited=0; const MAX_NODES=12000; const MAX_SCENE=2500;
   const id=(object,prefix='dom')=>{let value=state.ids.get(object);if(!value){value=`${state.documentId}:${prefix}:${state.nextId++}`;state.ids.set(object,value);}return value;};
   const data=(obj,key)=>{
@@ -198,7 +206,7 @@ function inspectDocument({ limit }) {
   }
   if(sceneVisits>=MAX_SCENE)warnings.push(`Scene traversal limited to ${MAX_SCENE} nodes`);
   if(canvases.length)warnings.push('Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision.');
-  return {controls,canvases,engines,warnings,viewport:{width:innerWidth,height:innerHeight},documentId:state.documentId};
+  return {controls,canvases,engines,warnings,visibleText,visibleTextTruncated,viewport:{width:innerWidth,height:innerHeight},documentId:state.documentId};
 }
 
 function optionsNumber(value,name,{min=0,max=100000,integer=false}={}) {
@@ -255,7 +263,8 @@ async function ancestorsUncovered(frame,point,cache){
 
 export async function detectUI(page,{maxControls=200}={}) {
   optionsNumber(maxControls,'maxControls',{max:2000,integer:true});
-  const controls=[],canvases=[],engines=[],frames=[],warnings=[];const cache=new Map();
+  const controls=[],canvases=[],engines=[],frames=[],warnings=[],visibleText=[];const cache=new Map();
+  let textChars=0,textTotalTruncated=false;
   const allFrames=page.frames().slice(0,100);if(page.frames().length>100)warnings.push('Frame traversal limited to 100 frames');
   let viewport;
   try {viewport=await page.mainFrame().evaluate(()=>({width:innerWidth,height:innerHeight}));}catch(error){throw new Error(`Cannot observe page: ${error.message}`);}
@@ -266,7 +275,14 @@ export async function detectUI(page,{maxControls=200}={}) {
         const g=await frameGeometry(frame,page,cache);if(!g.clip)continue;
         const installed=await frame.evaluate(()=>Boolean(globalThis.__umcpUIObservationV1));
         if(!installed){await frame.evaluate(instrumentDocument);warnings.push(`Frame ${index}: late instrumentation cannot recover earlier listeners/text draws`);}
-        const result=await frame.evaluate(inspectDocument,{limit:maxControls});
+        const textLimit=Math.min(1000,8000-textChars);
+        const result=await frame.evaluate(inspectDocument,{limit:maxControls,textLimit});
+        if(result.visibleText)visibleText.push({frameIndex:index,frameUrl,text:result.visibleText,truncated:result.visibleTextTruncated});
+        textChars+=result.visibleText.length;
+        if(result.visibleTextTruncated){
+          if(textLimit<1000)textTotalTruncated=true;
+          else warnings.push(`Frame ${index}: Visible text output limited to 1000 characters`);
+        }
         frames.push({index,url:frameUrl,documentId:result.documentId,viewport:result.viewport,offset:{x:g.x,y:g.y},scale:{x:g.sx,y:g.sy}});
         for(const control of result.controls){
           if(controls.length>=maxControls)break;
@@ -281,7 +297,8 @@ export async function detectUI(page,{maxControls=200}={}) {
       }catch(error){warnings.push(`Frame ${index} unavailable: ${error.message}`);}
     }
   }finally{for(const g of cache.values())if(g.handle)await g.handle.dispose().catch(()=>{});}
-  return {controls,canvases,engines,frames,needsVision:canvases.length>0||warnings.some(w=>w.includes('unavailable')||w.includes('limited')),warnings:[...new Set(warnings)],viewport};
+  if(textTotalTruncated)warnings.push('Visible text output limited to 8000 characters across all frames');
+  return {controls,canvases,engines,frames,visibleText,needsVision:canvases.length>0||warnings.some(w=>w.includes('unavailable')||w.includes('limited')),warnings:[...new Set(warnings)],viewport};
 }
 
 function matches(a,b,tolerance){return Boolean(a&&b&&a.id===b.id&&a.label===b.label&&a.source===b.source&&['x','y','width','height'].every(k=>Number.isFinite(a[k])&&Number.isFinite(b[k])&&Math.abs(a[k]-b[k])<=tolerance));}
@@ -302,8 +319,11 @@ export async function observeStable(page,{samples=3,intervalMs=2000,tolerancePx=
   });
   const stableIds=new Set(stableControls.map(c=>c.id));const unstableControls=[...ids].filter(id=>!stableIds.has(id));
   const documentsMatch=observations.every(o=>JSON.stringify(o.frames.map(f=>f.documentId))===JSON.stringify(last.frames.map(f=>f.documentId)));
-  // A truncated/inaccessible observation cannot establish stability.
-  const complete=observations.every(o=>!o.warnings.some(w=>/unavailable|limited/.test(w)));
+  // Stability describes actionable controls. Truncated/unavailable prose retains
+  // its warning and needsVision signal but does not make control coverage partial.
+  // Only frame inspection failures or actual traversal/control limits do that.
+  const affectsControlIntegrity=warning=>/^(?:Frame traversal limited|Frame \d+ unavailable:)|(?:^|: )(?:DOM traversal limited|Scene traversal limited|Control output limited)/.test(warning);
+  const complete=observations.every(o=>!o.warnings.some(affectsControlIntegrity));
   const finishedAt=Date.now();
   return {...last,controls:stableControls,stable:unstableControls.length===0&&documentsMatch&&complete,unstableControls,samples,timing:{startedAt,finishedAt,elapsedMs:finishedAt-startedAt,intervalMs},warnings:[...new Set(observations.flatMap(o=>o.warnings))]};
 }

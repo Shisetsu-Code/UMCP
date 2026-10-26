@@ -13,7 +13,7 @@ npm ci
 npx playwright install chromium
 ```
 
-En Linux de CI: `npx playwright install --with-deps chromium`. Si se usa un Chromium instalado, `UMCP_EXECUTABLE_PATH` permite indicar su ejecutable; la compatibilidad se prueba con la versión fijada de Playwright.
+En Linux, si faltan bibliotecas del sistema: `npx playwright install --with-deps chromium`. La CI usa Ubuntu 24.04 con esas bibliotecas disponibles e instala sólo Chromium. Si se usa un Chromium instalado, `UMCP_EXECUTABLE_PATH` permite indicar su ejecutable; la compatibilidad se prueba con la versión fijada de Playwright.
 
 Configure un cliente MCP que soporte servidores locales por stdio:
 
@@ -90,7 +90,7 @@ Para hacer click en el píxel `(300,180)` de una imagen:
 
 ## Detección de interfaz: alcance real
 
-- DOM visible y accionable; atributos ARIA, controles nativos, links y listeners de puntero.
+- DOM visible y accionable; atributos ARIA, controles nativos, links y listeners de puntero. Texto visible de carga/error acotado a 1.000 caracteres por frame y 8.000 en total, separado de los controles.
 - Shadow DOM abierto, iframes anidados, bordes, escala y oclusión del centro del control.
 - Adaptadores acotados para raíces de **PixiJS, Phaser, CreateJS y Laya** accesibles desde el documento. Pixi/Phaser/CreateJS se ejercitan con escenas de prueba; Laya todavía no tiene verificación con un runtime real.
 - Canvas: área visible y texto 2D observado durante el dibujo. El texto no se convierte automáticamente en un botón.
@@ -102,7 +102,7 @@ No se promete extraer semántica universal desde WebGL. Máscaras complejas, hit
 
 HTTP: URL, método, headers, cuerpo de solicitud/respuesta cuando disponible, status, errores, tiempos y tamaños. Se captura tráfico de todas las páginas del contexto. WebSocket: aperturas, cierres, errores y frames enviados/recibidos, texto y binario base64. Las marcas (`umcp_network` con `operation:"mark"`) y cada acción permiten correlacionar tráfico por timestamp/ID.
 
-`operation:"query"` es compacto y paginado; `detail` con `requestId` permite leer el cuerpo. `endpoints` agrupa método + ruta y describe la forma observada del payload. No decide que una compra terminó porque recibió HTTP 200/202. El cuerpo se inspecciona aunque su MIME sea incorrecto; los archivos adjuntos mostraron XML anunciado como HTML/formulario.
+`operation:"query"` es compacto y paginado; `detail` con `requestId` permite leer el cuerpo. Las consultas muestran el estado actual sin esperar long polling; `operation:"flush"` espera las solicitudes/cuerpos pendientes hasta cinco segundos y devuelve contadores de pendientes. La exportación también hace ese flush acotado. `endpoints` agrupa método + ruta y describe la forma observada del payload. No decide que una compra terminó porque recibió HTTP 200/202. El cuerpo se inspecciona aunque su MIME sea incorrecto; los archivos adjuntos mostraron XML anunciado como HTML/formulario.
 
 ### Qué guardar
 
@@ -145,7 +145,7 @@ python3 scripts/analyze-hars.py --input ./mis-har --output ./resumen.json
 
 La suite ejercita un servidor HTTP/WS real, Chromium, iframes, escenas, imágenes, errores, redacción y un cliente MCP conectado por stdio. [`ci.yml`](.github/workflows/ci.yml) ejecuta esa suite y ocho smoke tests de demos públicas en Actions. Cada smoke guarda captura, observación, tiempos y resultado. Los HAR publicados por CI contienen sólo una lista permitida de metadatos: sin cuerpos, datos de frames, headers ni valores de query. Los exports locales sí pueden conservar los payloads elegidos por el usuario.
 
-Un smoke sin superficie de juego termina con error: no convierte una pantalla de bloqueo en “juego aprobado”. Los estados `game-observed`, `canvas-observed`, `external-block`, `no-game-surface` y `error` delimitan la evidencia. El smoke no cubre todos los giros/compras del juego.
+El smoke exige un canvas y tráfico válido del endpoint esperado para devolver éxito. `canvas-observed` por sí solo queda incompleto; `external-block`, `launch-error`, `navigation-failed`, `no-game-surface` y `error` conservan el motivo del fallo. Un resultado `game-observed` demuestra observación e inicialización aparente, y requiere revisar su captura; el smoke no cubre todos los giros/compras del juego.
 
 - [Hallazgos de los 18 HAR](docs/har-findings.md)
 - [Diseño y límites](docs/superpowers/specs/2026-10-26-umcp-design.md)

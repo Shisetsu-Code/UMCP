@@ -6,6 +6,7 @@ export async function startFixture(){
   const server=http.createServer(async(req,res)=>{
     const url=new URL(req.url,'http://fixture.test');
     let body=''; for await(const chunk of req) body+=chunk;
+    if(url.pathname==='/api/hold'){received.push({path:url.pathname,method:req.method,body});res.writeHead(200,{'content-type':'text/event-stream'});res.flushHeaders();return;}
     if(url.pathname.startsWith('/api/')){
       received.push({path:url.pathname,method:req.method,body});
       res.setHeader('content-type','application/json');
@@ -33,11 +34,12 @@ export async function startFixture(){
       fetch('/api/form',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'action=spin&bet=2&sid=fixture-secret'});
       fetch('/api/xml',{method:'POST',headers:{'content-type':'text/html'},body:'<request><action>init</action><session>fixture-secret</session></request>'});
       fetch('/missing');
+      if(location.search.includes('hold=1'))fetch('/api/hold');
       const ws=new WebSocket('ws://127.0.0.1:${server.address().port}/socket?token=fixture-secret');ws.onopen=()=>{ws.send(JSON.stringify({action:'hello',token:'fixture-secret'}));ws.send(new Uint8Array([0,1,2,255]));};
       </script></body></html>`);
   });
   const wss=new WebSocketServer({server});
   wss.on('connection',ws=>{ws.on('message',(data,binary)=>ws.send(data,{binary}));});
   await new Promise(resolve=>server.listen(0,'0.0.0.0',resolve));
-  return {url:`http://127.0.0.1:${server.address().port}`,received,close:async()=>{for(const ws of wss.clients) ws.terminate();await new Promise(r=>wss.close(r));await new Promise(r=>server.close(r));}};
+  return {url:`http://127.0.0.1:${server.address().port}`,received,close:async()=>{for(const ws of wss.clients) ws.terminate();await new Promise(r=>wss.close(r));server.closeAllConnections();await new Promise(r=>server.close(r));}};
 }

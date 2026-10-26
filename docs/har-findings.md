@@ -115,7 +115,7 @@ Los endpoints se muestran sin valores de query. `{connectionId}` y `{actionId}` 
 
 | Juego / ID | URL pública o launcher | Evidencia / alcance |
 |---|---|---|
-| CollectOrbs: Wild West Wilds™ / `gpas_trgems_pop` | https://gpas-games.playtechone.com/gpasclient.html?game=gpas_trgems_pop | HAR page/referrer; title from gameclient_titles_list_live.php at cachedownload HAR entry 278; WS handshake present |
+| CollectOrbs: Wild West Wilds™ / `gpas_trgems_pop` | https://gpas-games.playtechone.com/gpasclient.html?game=gpas_trgems_pop#casino=playtechhorizon&imsgame=gpas_trgems_pop&preferedmode=offline&real=0&crosslaunchurl=https%3A%2F%2Fcachedownload.playtechone.com%2Fngmdesktop%2Fcasinoclient.html%3Fgame%3D%5Bgame%5D%26preferedmode%3Doffline%26real%3D0 | HAR page/referrer; title from gameclient_titles_list_live.php at cachedownload HAR entry 278; WS handshake present |
 | Frankie Dettori: Sporting Legends™ / `fdtsl` | https://cachedownload.playtechone.com/ngmdesktop/casinoclient.html?game=fdtsl&real=0&preferedmode=offline | Observed launcher and title table at cachedownload HAR entry 278; WS handshake present |
 
 #### Endpoints y esquemas de esta familia

@@ -162,3 +162,44 @@ test('instrumentation preserves native option getters and does not coerce clearR
   });
   assert.deepEqual(result,{reads:1,calls:1,threw:false,coercions:1});
 });
+
+test('plain DOM launch errors expose visible text without inventing controls or revealing hidden source/form values',async t=>{
+  const page=await fixture(t,`<main>missing/invalid launch parameters</main><p>Loading game…</p>
+    <span style="display:none">hidden-secret</span><script>window.privateSource='source-secret'</script><style>.private-source{color:red}</style>
+    <input value="input-secret"><input type="password" value="password-secret"><textarea>textarea-secret</textarea>`);
+  const result=await ui.detectUI(page,{maxControls:0});
+  assert.equal(result.controls.length,0);assert.equal(result.canvases.length,0);
+  assert.ok(Array.isArray(result.visibleText));assert.equal(result.visibleText.length,1);
+  assert.equal(result.visibleText[0].frameIndex,0);assert.equal(result.visibleText[0].frameUrl,page.url());
+  assert.match(result.visibleText[0].text,/missing\/invalid launch parameters/);assert.match(result.visibleText[0].text,/Loading game/);
+  assert.doesNotMatch(result.visibleText[0].text,/hidden-secret|source-secret|input-secret|password-secret|textarea-secret|private-source/);
+});
+
+test('visible text output shares a total budget across frames and reports per-frame/aggregate truncation',async t=>{
+  const page=await fixture(t,'<main>'+('A'.repeat(1300))+'</main>'+Array.from({length:9},()=>'<iframe style="width:120px;height:30px"></iframe>').join(''));
+  for(const frame of page.frames().slice(1))await frame.setContent('<main>'+('B'.repeat(1300))+'</main>');
+  const result=await ui.detectUI(page);
+  assert.ok(result.visibleText.length>1);
+  assert.equal(result.visibleText.reduce((sum,entry)=>sum+entry.text.length,0),8000);
+  assert.ok(result.visibleText.every(entry=>entry.text.length<=1000));
+  assert.ok(result.visibleText.some(entry=>entry.truncated));
+  assert.ok(result.warnings.some(w=>w.includes('Visible text')&&w.includes('1000')));
+  assert.ok(result.warnings.some(w=>w.includes('Visible text')&&w.includes('8000')));
+});
+
+test('truncated page text preserves stable controls while actual control limits still prevent stability',async t=>{
+  const page=await fixture(t,'<button>Stable action</button><p>'+('Visible prose. '.repeat(120))+'</p>');
+  const result=await ui.observeStable(page,{samples:3,intervalMs:1});
+  assert.equal(result.stable,true);
+  assert.equal(result.controls.length,1);
+  assert.equal(result.controls[0].label,'Stable action');
+  assert.equal(result.visibleText[0].text.length,1000);
+  assert.equal(result.visibleText[0].truncated,true);
+  assert.ok(result.warnings.some(w=>w.includes('Visible text output limited')));
+  // Omitted text can still benefit from vision independently of control stability.
+  assert.equal(result.needsVision,true);
+  await page.evaluate(()=>{const button=document.createElement('button');button.textContent='Another action';document.body.prepend(button)});
+  const limited=await ui.observeStable(page,{samples:3,intervalMs:1,maxControls:1});
+  assert.equal(limited.stable,false);
+  assert.ok(limited.warnings.some(w=>w.includes('Control output limited')));
+});

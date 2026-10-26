@@ -227,12 +227,12 @@ export class BrowserService {
   }
   async network(args){
     return this._run(args,async(s)=>{
-      await s.network.flush();
       switch(args.operation??'query'){
         case 'query':return s.network.query(args);
         case 'detail':return s.network.detail(args.requestId,args);
         case 'endpoints':return s.network.endpoints(args);
-        case 'stats':case 'flush':return s.network.stats();
+        case 'stats':return s.network.stats();
+        case 'flush':await s.network.flush();return s.network.stats();
         case 'mark':return s.network.mark(args.label??'manual');
         default:throw new Error('Unknown network operation');
       }

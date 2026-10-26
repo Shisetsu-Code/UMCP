@@ -6,6 +6,20 @@ import { join } from 'node:path';
 import { BrowserService } from '../src/browser.js';
 import { startFixture } from './fixture-server.js';
 
+test('network snapshots stay responsive while a long-lived HTTP response is pending',{timeout:30000},async()=>{
+  const fixture=await startFixture();const service=new BrowserService({headless:true});
+  try{
+    const opened=await service.open({url:fixture.url+'/?hold=1'});
+    for(let i=0;i<100&&!fixture.received.some(r=>r.path==='/api/hold');i++)await new Promise(r=>setTimeout(r,10));
+    assert.ok(fixture.received.some(r=>r.path==='/api/hold'));
+    const start=performance.now();
+    const stats=await service.network({sessionId:opened.sessionId,operation:'stats'});
+    const listing=await service.network({sessionId:opened.sessionId,operation:'query'});
+    assert.ok(performance.now()-start<1000,'Read-only network snapshots must not wait 5s for a long poll');
+    assert.ok(stats.inflight>0);assert.ok(listing.entries.some(e=>e.url.endsWith('/api/hold')));
+  }finally{await fixture.close();await service.shutdown();}
+});
+
 test('browser observes, clicks scaled images, measures HTTP/WS, filters HAR and rejects stale targets', {timeout:60000}, async()=>{
   const fixture=await startFixture();const dir=await mkdtemp(join(tmpdir(),'umcp-integration-'));
   const service=new BrowserService({headless:true,artifactDir:dir});
