@@ -100,7 +100,7 @@ Para hacer click en el píxel `(300,180)` de una imagen:
 
 No se promete extraer semántica universal desde WebGL. Máscaras complejas, hit areas particulares, cámaras, transformaciones no soportadas y Shadow DOM cerrado pueden requerir visión. Iframes rotados/skewed se informan sin publicar coordenadas inseguras.
 
-Las regiones de `umcp_mark_controls` son afirmaciones visuales del LLM. Permanecen mientras coincidan URL y viewport, aunque el canvas cambie de menú; una observación nueva no revalida su contenido. Use `clear:true` y vuelva a marcarlas después de cambiar pantalla, menú o desplazamiento. Las acciones disponibles no incluyen mantener presionado el ratón: un control de autoplay que sólo se abra con pulsación prolongada queda fuera de esta versión.
+Las regiones de `umcp_mark_controls` son afirmaciones visuales del LLM. Se borran antes de cada acción, incluida una espera, y al navegar. Observe y vuelva a marcarlas después de actuar. Una observación nueva por sí sola no revalida su contenido si el canvas cambia sin una acción del MCP. Las acciones disponibles no incluyen mantener presionado el ratón: un control de autoplay que sólo se abra con pulsación prolongada queda fuera de esta versión.
 
 ## Red y HAR
 
@@ -135,6 +135,9 @@ HTTP `httpVersion` se informa como desconocido cuando Playwright no lo expone: n
 
 Los exports eliminan por defecto cookies, autorización y campos sensibles reconocidos en query, formularios, JSON y XML. `redact:false` conserva los datos crudos explícitamente. Los payloads binarios opacos pueden contener información que no se puede reconocer: se conservan y `_redaction.complete:false` advierte esa limitación. La redacción no sustituye una revisión antes de compartir HAR crudos.
 
+
+La retención por proceso está limitada a 500 artefactos y 512 MiB en total, configurable con `UMCP_MAX_ARTIFACTS` y `UMCP_MAX_ARTIFACT_BYTES` (enteros positivos). Al alcanzar una cuota, nuevas capturas y exports fallan explícitamente; los artefactos anteriores siguen disponibles y no se borran ni se expulsan del registro. Las escrituras concurrentes comparten la cuota. Los límites sólo cuentan archivos creados por ese proceso: use un directorio nuevo por ejecución y archive o limpie los anteriores cuando haya guardado la evidencia necesaria. Reiniciar no elimina archivos ni vuelve a registrar los antiguos.
+
 Los archivos se guardan con nombres generados en `artifacts/` o en el directorio elegido. Se devuelven como recurso MCP y ruta local. Recursos de hasta 1 MiB se pueden leer directamente; los mayores se descargan con `umcp_artifact` usando `nextOffset`.
 
 ### Formato WebSocket
@@ -151,7 +154,7 @@ node scripts/live-smoke.js all
 python3 scripts/analyze-hars.py --input ./mis-har --output ./resumen.json
 ```
 
-La suite ejercita un servidor HTTP/WS real, Chromium, iframes, escenas, imágenes, errores, redacción y un cliente MCP conectado por stdio. [`ci.yml`](.github/workflows/ci.yml) ejecuta esa suite y ocho smoke tests de demos públicas en Actions. Cada smoke guarda captura, observación, tiempos y resultado. Los HAR publicados por CI contienen sólo una lista permitida de metadatos: sin cuerpos, datos de frames, headers ni valores de query. Los exports locales sí pueden conservar los payloads elegidos por el usuario.
+La suite ejercita un servidor HTTP/WS real, Chromium, iframes, escenas, imágenes, errores, redacción y un cliente MCP conectado por stdio. [`ci.yml`](.github/workflows/ci.yml) ejecuta esa suite. [`live.yml`](.github/workflows/live.yml) ejecuta por separado ocho smoke tests de demos públicas en Actions; ambos admiten ejecución manual y los bloqueos externos conservan el fallo en el workflow de demos. Cada smoke guarda captura, observación, tiempos y resultado. Los HAR publicados por CI contienen sólo una lista permitida de metadatos: sin cuerpos, datos de frames, headers ni valores de query. Los exports locales sí pueden conservar los payloads elegidos por el usuario.
 
 El smoke exige un canvas y tráfico válido del endpoint esperado para devolver éxito. `canvas-observed` por sí solo queda incompleto; `external-block`, `launch-error`, `navigation-failed`, `no-game-surface` y `error` conservan el motivo del fallo. Un resultado `game-observed` demuestra observación e inicialización aparente, y requiere revisar su captura; el smoke no cubre todos los giros/compras del juego.
 

@@ -16,6 +16,9 @@ test('actual stdio MCP initialize/list/call/image/resource and input validation'
   try{
     await client.connect(transport);
     const tools=await client.listTools();assert.ok(tools.tools.length>=13);assert.ok(tools.tools.some(t=>t.name==='umcp_network'));
+    const networkTool=tools.tools.find(t=>t.name==='umcp_network');
+    assert.equal(networkTool.annotations.readOnlyHint,false,'mark changes capture attribution');
+    assert.equal(networkTool.annotations.idempotentHint,false,'repeated marks are distinct');
     const opened=await client.callTool({name:'umcp_open',arguments:{url:fixture.url}});assert.ok(!opened.isError,JSON.stringify(opened));
     const sessionId=opened.structuredContent.sessionId;
     const observed=await client.callTool({name:'umcp_observe',arguments:{sessionId,samples:1}});assert.ok(observed.structuredContent.controls.some(c=>c.label==='Test action'));
