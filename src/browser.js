@@ -22,6 +22,10 @@ export class BrowserService {
   constructor(options={}){
     this.options=options;
     this.artifactDir=resolve(options.artifactDir??process.env.UMCP_ARTIFACT_DIR??'artifacts');
+    this.maxArtifacts=Number(options.maxArtifacts??process.env.UMCP_MAX_ARTIFACTS??500);
+    this.maxArtifactBytes=Number(options.maxArtifactBytes??process.env.UMCP_MAX_ARTIFACT_BYTES??536870912);
+    for(const value of [this.maxArtifacts,this.maxArtifactBytes])if(!Number.isSafeInteger(value)||value<1)throw new Error('Artifact quotas must be positive safe integers');
+    this._artifactBytes=0;this._artifactQueue=Promise.resolve();
     this._sessions=new Map();this._artifacts=new Map();this._browser=null;this._launch=null;this._headless=null;this._opening=0;
   }
   async _getBrowser(headless){
@@ -136,11 +140,17 @@ export class BrowserService {
   }
   async observe(args){return this._run(args,(s,p)=>this._observe(s,p,args));}
   async _artifact(buffer,{format,mimeType,prefix='capture'}){
+    const task=this._artifactQueue.then(()=>this._writeArtifact(buffer,{format,mimeType,prefix}));
+    this._artifactQueue=task.catch(()=>{});
+    return task;
+  }
+  async _writeArtifact(buffer,{format,mimeType,prefix}){
+    if(this._artifacts.size>=this.maxArtifacts||buffer.length>this.maxArtifactBytes-this._artifactBytes)throw new Error('Artifact quota reached; save required evidence and restart with a fresh artifact directory or larger UMCP_MAX_ARTIFACTS / UMCP_MAX_ARTIFACT_BYTES limits');
     await mkdir(this.artifactDir,{recursive:true});
     const artifactId=id(prefix);const name=`${artifactId}.${format}`;const path=join(this.artifactDir,name);
     await writeFile(path,buffer,{flag:'wx',mode:0o600});
     const artifact={artifactId,name,path,uri:`umcp://artifacts/${artifactId}`,mimeType,bytes:buffer.length,createdAt:Date.now()};
-    this._artifacts.set(artifactId,artifact);trimMap(this._artifacts,500);
+    this._artifacts.set(artifactId,artifact);this._artifactBytes+=buffer.length;
     return artifact;
   }
   async _screenshot(s,p,args={}){
@@ -190,6 +200,7 @@ export class BrowserService {
       const mark=await s.network.mark(args.label??args.kind);
       // Invalidate before an input: an uncertain click must never be silently repeated with an old reference.
       p.generation++;
+      p.manual=[];
       switch(args.kind){
         case 'click':await p.page.mouse.click(point.x,point.y,{button:args.button??'left'});break;
         case 'doubleClick':await p.page.mouse.dblclick(point.x,point.y,{button:args.button??'left'});break;
@@ -222,7 +233,7 @@ export class BrowserService {
         p.manual.push({...item,id:id('manual'),label:String(item.label).slice(0,150),url:p.page.url(),viewport});
       }
       p.generation++;
-      return {sessionId:s.id,pageId:p.id,controls:this._manual(p,viewport),note:'Manual regions are caller assertions, not detected buttons; cleared on frame navigation and retained only for this URL/viewport.'};
+      return {sessionId:s.id,pageId:p.id,controls:this._manual(p,viewport),note:'Manual regions are caller assertions, not detected buttons; cleared before every action and on frame navigation. Observe and recreate them after an action.'};
     });
   }
   async network(args){

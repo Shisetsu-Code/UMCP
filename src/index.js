@@ -9,7 +9,7 @@ for(let i=0;i<args.length;i++){
     case '--headed':options.headless=false;break;
     case '--artifacts':if(!args[i+1])throw new Error('--artifacts requires a directory');options.artifactDir=args[++i];break;
     case '--version':console.log('umcp-local 0.1.0');process.exit(0);break;
-    case '--help':console.log('UMCP local MCP server (stdio)\nUsage: node src/index.js [--headless|--headed] [--artifacts DIR]\nEnvironment: UMCP_HEADLESS=true, UMCP_ARTIFACT_DIR, UMCP_EXECUTABLE_PATH\nInstall browser: npx playwright install chromium\nConfigure this command in an MCP stdio client.');process.exit(0);break;
+    case '--help':console.log('UMCP local MCP server (stdio)\nUsage: node src/index.js [--headless|--headed] [--artifacts DIR]\nEnvironment: UMCP_HEADLESS=true, UMCP_ARTIFACT_DIR, UMCP_EXECUTABLE_PATH, UMCP_MAX_ARTIFACTS=500, UMCP_MAX_ARTIFACT_BYTES=536870912\nInstall browser: npx playwright install chromium\nConfigure this command in an MCP stdio client.');process.exit(0);break;
     default:throw new Error(`Unknown argument: ${args[i]}`);
   }
 }

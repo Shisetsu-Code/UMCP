@@ -62,6 +62,8 @@ test('manual controls, page switching and session isolation', {timeout:45000},as
     await service.markControls({sessionId:one.sessionId,controls:[{label:'Canvas centre',x:700,y:340,width:120,height:80}]});
     const obs=await service.observe({sessionId:one.sessionId,samples:1});assert.ok(obs.controls.some(c=>c.source==='manual'));
     await service.act({sessionId:one.sessionId,kind:'click',controlId:obs.controls.find(c=>c.label==='Open popup').id,observationId:obs.observationId});
+    const afterAction=await service.observe({sessionId:one.sessionId,samples:1});
+    assert.ok(!afterAction.controls.some(c=>c.source==='manual'),'inputs expire caller-identified regions');
     const pages=await service.pages({sessionId:one.sessionId});assert.equal(pages.pages.length,2);
     const secondObs=await service.observe({sessionId:two.sessionId,samples:1});assert.ok(secondObs.controls.some(c=>c.label==='Next page'));assert.ok(!secondObs.controls.some(c=>c.source==='manual'));
     await service.close({sessionId:one.sessionId});assert.equal((await service.sessions()).sessions.length,1);
