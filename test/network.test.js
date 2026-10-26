@@ -92,6 +92,26 @@ test('summary and family detection report evidence without inventing game operat
  assert.equal(detectFamily(har(entry({request:{...entry().request,url:'https://cdn.test/phaser.min.js'}}))).family,'phaser');
 });
 
+test('summary preserves source filter provenance unless a new selection is requested',()=>{
+ const start=Date.parse('2026-10-26T12:00:00.000Z');
+ const ws=entry({_resourceType:'websocket',_webSocketMessages:[{time:start/1000,data:'old'},{time:(start+1000)/1000,data:'new'}]});
+ const source=filterHar(har(entry(),ws,structuredClone(ws),structuredClone(ws)),{preset:'ws',transport:'ws',since:start+1000,includeBodies:false,offset:1,limit:2});
+ const summary=summarizeHar(source);
+ assert.equal(summary.entries,2,'summarizing an already paginated HAR must not apply its offset again');
+ assert.equal(summary.filter.preset,'ws');assert.equal(summary.filter.transport,'ws');assert.equal(summary.filter.includeBodies,false);
+ assert.deepEqual(summary.filter,source.log._filter);
+ assert.deepEqual(summary.filter.timeRange.webSocketFrames,{total:6,inRange:3,excludedOutsideRange:3,excludedMissingOrInvalidTime:0});
+ assert.deepEqual(summarizeHar(source,{limit:undefined}).filter,source.log._filter);
+ const limited=summarizeHar(source,{limit:1});
+ assert.equal(limited.entries,1);assert.equal(limited.filter.preset,'ws');assert.equal(limited.filter.transport,'ws');
+ assert.equal(limited.filter.total,2);assert.equal(limited.filter.offset,0);assert.equal(limited.filter.limit,1);assert.equal(limited.filter.returned,1);
+ assert.deepEqual(limited.filter.timeRange,source.log._filter.timeRange);
+ const selected=summarizeHar(source,{transport:'http'});
+ assert.equal(selected.entries,0);assert.equal(selected.filter.transport,'http');assert.equal(selected.filter.returned,0);
+ summary.filter.timeRange.webSocketFrames.total=0;
+ assert.equal(source.log._filter.timeRange.webSocketFrames.total,6,'summary metadata must not alias the input HAR');
+});
+
 function fixture() {
  const context=new EventEmitter(); context.pages=()=>[];
  const request=(url='https://demo.test/api',body='{"token":"SECRET","bet":1}',resource='fetch')=>({url:()=>url,method:()=> 'POST',resourceType:()=>resource,headers:()=>({'content-type':'application/json',authorization:'SECRET'}),allHeaders:async()=>({'content-type':'application/json',authorization:'SECRET'}),postDataBuffer:()=>Buffer.from(body),timing:()=>({startTime:Date.now(),domainLookupStart:-1,domainLookupEnd:-1,connectStart:-1,connectEnd:-1,secureConnectionStart:-1,requestStart:0,responseStart:2,responseEnd:3}),sizes:async()=>({requestBodySize:body.length,responseBodySize:50,responseHeadersSize:40,requestHeadersSize:30}),failure:()=>({errorText:'net::ERR_FAILED'})});

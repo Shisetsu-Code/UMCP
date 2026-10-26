@@ -129,7 +129,14 @@ export function detectFamily(har) {
 }
 export function summarizeHar(har,options={}) {
  const filtered=filterHar(har,options),es=filtered.log.entries;const webSockets=es.filter(isWS).length;
- return {entries:es.length,http:es.length-webSockets,webSockets,webSocketFrames:es.reduce((n,e)=>n+(e._webSocketMessages?.length??0),0),webSocketFrameEvidence:webSockets?(es.some(e=>e._webSocketMessages?.length)?'frames-present':'handshakes-only-or-no-exported-frames'):'no-websocket-evidence-in-har',failed:es.filter(e=>e._error||e._state==='failed'||!isWS(e)&&e.response?.status===0).length,bytes:es.reduce((n,e)=>n+Math.max(0,e.response?.bodySize??e.response?.content?.size??0),0),endpoints:endpointRows(es).slice(0,clampInteger(options.limit,100,0,1000)),family:detectFamily(filtered),capture:filtered.log._capture??null,filter:filtered.log._filter};
+ const selectsAgain=Object.entries(options).some(([key,value])=>value!=null&&!['offset','limit'].includes(key));
+ let filter=filtered.log._filter;
+ // Describe the source selection without applying its original pagination again.
+ if(har.log._filter&&!selectsAgain){
+  filter=clone(har.log._filter);
+  if(options.offset!=null||options.limit!=null)for(const key of ['total','offset','limit','returned'])filter[key]=filtered.log._filter[key];
+ }
+ return {entries:es.length,http:es.length-webSockets,webSockets,webSocketFrames:es.reduce((n,e)=>n+(e._webSocketMessages?.length??0),0),webSocketFrameEvidence:webSockets?(es.some(e=>e._webSocketMessages?.length)?'frames-present':'handshakes-only-or-no-exported-frames'):'no-websocket-evidence-in-har',failed:es.filter(e=>e._error||e._state==='failed'||!isWS(e)&&e.response?.status===0).length,bytes:es.reduce((n,e)=>n+Math.max(0,e.response?.bodySize??e.response?.content?.size??0),0),endpoints:endpointRows(es).slice(0,clampInteger(options.limit,100,0,1000)),family:detectFamily(filtered),capture:filtered.log._capture??null,filter};
 }
 
 export class NetworkRecorder {
