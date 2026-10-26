@@ -67,7 +67,7 @@ for(const target of chosen){
       const safeControl=obs.controls.find(c=>{
         if(clicked.has(c.label)||c.label.length>=90)return false;
         const label=c.label.trim();
-        const ageGate=/legal age|over (the age of )?18|18 years/i.test(text)&&/^(yes,? i am|i am (over )?18.*)$/i.test(label);
+        const ageGate=/legal age|over (the age of )?18|18 years/i.test(text)&&/^(yes,? i am|yes,? i['’]m 18 years or older|i am (over )?18.*)$/i.test(label);
         const cookie=/cookies/i.test(text)&&/^(i accept|accept cookies|reject all|reject all cookies|accept all|accept all cookies|aceptar todas|rechazar todas)$/i.test(label);
         const launch=(!meaningfulCanvas||!report.expectedEndpointObserved)&&/^(play|play demo|demo|try demo|play for fun|try for free|play now|launch game|play game)$/i.test(label);
         const intro=/^(continue|start|skip intro)$/i.test(label);

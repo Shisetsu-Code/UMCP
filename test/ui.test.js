@@ -222,3 +222,25 @@ test('declarative click spans expose delegated launch controls and reveal a popu
   const opened=await ui.detectUI(page);
   assert.equal(opened.canvases.length,1);assert.equal(opened.needsVision,true);
 });
+
+test('hidden iframe scenes are skipped early while visible overrides and normal canvas geometry remain detectable',async t=>{
+  const page=await fixture(t,`<div id="container"><iframe style="width:400px;height:300px;border:0;visibility:hidden"></iframe></div>`);
+  const child=page.frames()[1];
+  await child.setContent(`<canvas width="360" height="250"></canvas><script>
+    window.boundsReads=0;window.app={renderer:{canvas:document.querySelector('canvas'),screen:{width:360,height:250}},stage:{children:[{name:'Frame action',eventMode:'static',getBounds(){window.boundsReads++;return {x:20,y:20,width:100,height:40}}}]}};
+    </script>`);
+  const hidden=await ui.detectUI(page);
+  assert.equal(await child.evaluate(()=>window.boundsReads),0);
+  assert.equal(hidden.canvases.length,0);assert.equal(hidden.controls.length,0);
+  await page.locator('iframe').evaluate(el=>el.style.visibility='visible');
+  const shown=await ui.detectUI(page);
+  assert.ok(await child.evaluate(()=>window.boundsReads)>0);
+  assert.equal(shown.canvases.length,1);assert.ok(shown.controls.some(c=>c.label==='Frame action'));
+  await child.evaluate(()=>window.boundsReads=0);
+  await page.locator('#container').evaluate(el=>el.style.opacity='0');
+  assert.equal((await ui.detectUI(page)).canvases.length,0);
+  assert.equal(await child.evaluate(()=>window.boundsReads),0);
+  await page.locator('#container').evaluate(el=>{el.style.opacity='1';el.style.visibility='hidden'});
+  const override=await ui.detectUI(page);
+  assert.equal(override.canvases.length,1);assert.ok(override.controls.some(c=>c.label==='Frame action'));
+});

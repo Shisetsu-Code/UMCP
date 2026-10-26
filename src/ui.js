@@ -238,9 +238,15 @@ async function frameGeometry(frame, page, cache) {
     try {
       const box=await handle.boundingBox();
       const dimensions=await handle.evaluate(el=>{
+        const iframeVisibility=getComputedStyle(el).visibility;
+        let hidden=iframeVisibility==='hidden'||iframeVisibility==='collapse';
         let unsupportedTransform=false;
         for(let ancestor=el;ancestor;ancestor=ancestor.parentElement||ancestor.getRootNode()?.host){
           const style=getComputedStyle(ancestor);
+          // visibility is inherited but descendants may override it. Only the
+          // iframe's computed visibility decides that property; display/opacity
+          // on any ancestor hide the whole embedded surface.
+          if(style.display==='none'||Number(style.opacity)<=0)hidden=true;
           if(style.transform!=='none'){
             const match=style.transform.match(/^matrix\(([^)]+)\)$/);
             const m=match?.[1].split(',').map(Number);
@@ -251,8 +257,13 @@ async function frameGeometry(frame, page, cache) {
           if(style.scale&&style.scale!=='none'&&style.scale.split(/\s+/).some(v=>!Number.isFinite(Number(v))||Number(v)<=0))unsupportedTransform=true;
           if(style.perspective&&style.perspective!=='none')unsupportedTransform=true;
         }
-        return {width:el.offsetWidth,height:el.offsetHeight,borderX:el.clientLeft,borderY:el.clientTop,clientWidth:el.clientWidth,clientHeight:el.clientHeight,unsupportedTransform};
+        return {width:el.offsetWidth,height:el.offsetHeight,borderX:el.clientLeft,borderY:el.clientTop,clientWidth:el.clientWidth,clientHeight:el.clientHeight,unsupportedTransform,hidden};
       });
+      if(dimensions.hidden){
+        geometry={x:0,y:0,sx:1,sy:1,clip:null,handle,parent};
+        cache.set(frame,geometry);
+        return geometry;
+      }
       if(!box||!dimensions.width||!dimensions.height)throw new Error('Frame has no visible bounds');
       // Axis aligned CSS scaling is supported. Rotation/skew cannot be represented
       // by one CSS bounding rectangle, so do not publish unsafe click coordinates.
