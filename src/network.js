@@ -59,6 +59,7 @@ function omitBodies(e) {
  if(e.response?.content){delete e.response.content.text;delete e.response.content.encoding;e.response.content._bodyState='excluded-by-filter';}
  for(const f of e._webSocketMessages ?? []) {delete f.data;f._bodyState='excluded-by-filter';}
 }
+const inTimeRange=(time,o)=>Number.isFinite(time)&&(o.since==null||time>=Number(o.since))&&(o.until==null||time<=Number(o.until));
 function matches(e,o) {
  const ws=isWS(e),r=resource(e),url=e.request?.url ?? '';
  if(o.preset==='ws'&&!ws)return false;
@@ -69,17 +70,39 @@ function matches(e,o) {
  const methods=asArray(o.methods).map(m=>m.toUpperCase());if(methods.length&&!methods.includes((e.request?.method??'').toUpperCase()))return false;
  if(asArray(o.resourceTypes).length&&!asArray(o.resourceTypes).includes(r))return false;
  if(o.statusMin!=null&&(e.response?.status??0)<o.statusMin||o.statusMax!=null&&(e.response?.status??0)>o.statusMax)return false;
- const time=timestamp(e);if(o.since!=null&&time<Number(o.since)||o.until!=null&&time>Number(o.until))return false;
+ if(!ws){const time=timestamp(e);if(o.since!=null&&time<Number(o.since)||o.until!=null&&time>Number(o.until))return false;}
  return true;
 }
 /** Pure filter. Accepts Firefox and Chromium HAR and retains unknown extensions. */
 export function filterHar(har,options={}) {
  const out=clone(har);if(!out.log||!Array.isArray(out.log.entries))throw new TypeError('Expected HAR log.entries');
- const all=out.log.entries.filter(e=>matches(e,options)); const offset=clampInteger(options.offset,0);const limit=clampInteger(options.limit,all.length);
+ let all=out.log.entries.filter(e=>matches(e,options));
+ let timeRange;
+ if(options.since!=null||options.until!=null){
+  const counts={total:0,inRange:0,excludedOutsideRange:0,excludedMissingOrInvalidTime:0};
+  timeRange={since:options.since??null,until:options.until??null,inclusive:true,frameTimeUnit:'unix-seconds',scope:'HTTP request start; WS connection start or frame activity. WS frames are trimmed; connection metadata, byte counts, duration and opening action remain unchanged.',countsScope:'WS entries matching non-time filters, before temporal exclusion and pagination',webSocketFrames:counts,limitation:'Frames without a finite non-negative numeric epoch-seconds time are excluded from bounded selections; no timestamp units are inferred.'};
+  all=all.filter(e=>{
+   if(!isWS(e))return true;
+   const frames=e._webSocketMessages??[],selected=[];
+   let excludedOutsideRange=0,excludedMissingOrInvalidTime=0;
+   for(const frame of frames){
+    const time=typeof frame?.time==='number'&&frame.time>=0?frame.time*1000:NaN;
+    if(!Number.isFinite(time)){excludedMissingOrInvalidTime++;continue;}
+    if(inTimeRange(time,options))selected.push(frame);else excludedOutsideRange++;
+   }
+   const connectionStartedInRange=inTimeRange(Date.parse(e.startedDateTime),options);
+   e._webSocketFrameFilter={since:options.since??null,until:options.until??null,inclusive:true,frameTimeUnit:'unix-seconds',connectionStartedInRange,total:frames.length,returned:selected.length,excludedOutsideRange,excludedMissingOrInvalidTime,metadataScope:'Connection metadata, byte counts, duration and opening action remain unchanged.'};
+   if(Array.isArray(e._webSocketMessages))e._webSocketMessages=selected;
+   counts.total+=frames.length;counts.inRange+=selected.length;counts.excludedOutsideRange+=excludedOutsideRange;counts.excludedMissingOrInvalidTime+=excludedMissingOrInvalidTime;
+   return connectionStartedInRange||selected.length>0;
+  });
+ }
+ const offset=clampInteger(options.offset,0);const limit=clampInteger(options.limit,all.length);
  out.log.entries=all.slice(offset,offset+limit).map(e=>{if(options.includeBodies===false||options.preset==='metadata')omitBodies(e);return options.redact===false?e:sanitizeEntry(e);});
  const binary=out.log.entries.some(e=>e._webSocketMessages?.some(f=>f.opcode===2&&f.data!=null)||[e.request?.postData,e.response?.content].some(b=>b?.encoding==='base64'&&b.text!=null&&!isTextBuffer(Buffer.from(b.text,'base64'))));
  out.log._redaction={enabled:options.redact!==false,complete:options.redact!==false&&!binary,binaryPayloads:binary?'preserved-uninspected':'none-detected',scope:'known sensitive keys in URLs, headers, cookies, JSON, forms, XML and text frames; opaque binary and unrecognized credential formats require explicit review'};
  out.log._filter={...out.log._filter,preset:options.preset??'full',transport:options.transport??'all',redacted:options.redact!==false,includeBodies:options.includeBodies!==false&&options.preset!=='metadata',total:all.length,offset,limit,returned:out.log.entries.length};
+ if(timeRange)out.log._filter.timeRange=timeRange;
  // Page URLs can carry the same credentials as request URLs.
  if(options.redact!==false)for(const page of out.log.pages??[]) {if(page.title)page.title=cleanText(page.title);if(page._url)page._url=cleanUrl(page._url);}
  return out;
@@ -106,7 +129,7 @@ export function detectFamily(har) {
 }
 export function summarizeHar(har,options={}) {
  const filtered=filterHar(har,options),es=filtered.log.entries;const webSockets=es.filter(isWS).length;
- return {entries:es.length,http:es.length-webSockets,webSockets,webSocketFrames:es.reduce((n,e)=>n+(e._webSocketMessages?.length??0),0),webSocketFrameEvidence:webSockets?(es.some(e=>e._webSocketMessages?.length)?'frames-present':'handshakes-only-or-no-exported-frames'):'no-websocket-evidence-in-har',failed:es.filter(e=>e._error||e._state==='failed'||!isWS(e)&&e.response?.status===0).length,bytes:es.reduce((n,e)=>n+Math.max(0,e.response?.bodySize??e.response?.content?.size??0),0),endpoints:endpointRows(es).slice(0,clampInteger(options.limit,100,0,1000)),family:detectFamily(filtered),capture:filtered.log._capture??null};
+ return {entries:es.length,http:es.length-webSockets,webSockets,webSocketFrames:es.reduce((n,e)=>n+(e._webSocketMessages?.length??0),0),webSocketFrameEvidence:webSockets?(es.some(e=>e._webSocketMessages?.length)?'frames-present':'handshakes-only-or-no-exported-frames'):'no-websocket-evidence-in-har',failed:es.filter(e=>e._error||e._state==='failed'||!isWS(e)&&e.response?.status===0).length,bytes:es.reduce((n,e)=>n+Math.max(0,e.response?.bodySize??e.response?.content?.size??0),0),endpoints:endpointRows(es).slice(0,clampInteger(options.limit,100,0,1000)),family:detectFamily(filtered),capture:filtered.log._capture??null,filter:filtered.log._filter};
 }
 
 export class NetworkRecorder {
@@ -159,9 +182,9 @@ export class NetworkRecorder {
  stats(){return {storedEntries:this.entries.length,httpEntries:this.entries.filter(e=>!isWS(e)).length,webSocketEntries:this.entries.filter(isWS).length,frames:this.frameCount,retainedBodyBytes:this.retainedBodyBytes,pending:this.pending.size,inflight:this.inflight.size,flushTimeouts:this.flushTimeouts,...this.losses,limits:{...this.limits},captureBodies:this.captureBodies};}
  _har(){return {log:{version:'1.2',creator:{name:'UMCP',version:'1.0.0'},entries:this.entries.map(e=>{const {_response,_finished,...safe}=e;return clone(safe);}),_capture:{captureBodies:this.captureBodies,limits:{...this.limits},losses:{...this.losses},complete:!Object.values(this.losses).some(Boolean)&&this.captureBodies==='all'&&this.pending.size===0&&this.inflight.size===0&&this.entries.every(e=>!isWS(e)&&!['pending','incomplete'].includes(e._state)),scope:'available captured traffic; Playwright omits HTTP protocol version and WS handshake status/headers; a websocket creation event alone does not prove upgrade success. Unknown-length responses are materialized by response.body() before truncation; payload retention has a global byte budget, but temporary API allocations are not bounded by it',pendingEntries:this.entries.filter(e=>e._state==='pending').length,flushTimeouts:this.flushTimeouts}}};}
  exportHar(options={}){return filterHar(this._har(),options);}
- query(options={}){const limit=clampInteger(options.limit,100,0,1000),offset=clampInteger(options.offset,0);const filtered=filterHar(this._har(),{...options,limit,offset,includeBodies:false});return {entries:filtered.log.entries.map(e=>({id:e._id,url:e.request.url,method:e.request.method,status:e.response.status,resourceType:resource(e),transport:isWS(e)?'ws':'http',startedDateTime:e.startedDateTime,time:e.time,bytes:e.response.bodySize,frames:e._webSocketMessages?.length??0,state:e._state,error:e._error,action:e._action})),total:filtered.log._filter.total,offset,limit,stats:this.stats()};}
+ query(options={}){const limit=clampInteger(options.limit,100,0,1000),offset=clampInteger(options.offset,0);const filtered=filterHar(this._har(),{...options,limit,offset,includeBodies:false});return {entries:filtered.log.entries.map(e=>({id:e._id,url:e.request.url,method:e.request.method,status:e.response.status,resourceType:resource(e),transport:isWS(e)?'ws':'http',startedDateTime:e.startedDateTime,time:e.time,bytes:e.response.bodySize,frames:e._webSocketMessages?.length??0,state:e._state,error:e._error,action:e._action,frameFilter:e._webSocketFrameFilter})),total:filtered.log._filter.total,offset,limit,stats:this.stats(),filter:filtered.log._filter};}
  detail(id,options={}){const e=this.entries.find(e=>e._id===id);if(!e)return null;const {_response,_finished,...safe}=e;return filterHar({log:{version:'1.2',creator:{name:'UMCP',version:'1.0.0'},entries:[safe]}},options).log.entries[0]??null;}
- endpoints(options={}){const har=this.exportHar({...options,limit:undefined,offset:undefined});const rows=endpointRows(har.log.entries),offset=clampInteger(options.offset,0),limit=clampInteger(options.limit,100,0,1000);return {endpoints:rows.slice(offset,offset+limit),total:rows.length,offset,limit};}
+ endpoints(options={}){const har=this.exportHar({...options,limit:undefined,offset:undefined});const rows=endpointRows(har.log.entries),offset=clampInteger(options.offset,0),limit=clampInteger(options.limit,100,0,1000);return {endpoints:rows.slice(offset,offset+limit),total:rows.length,offset,limit,filter:har.log._filter};}
  async dispose(){if(this.disposed)return;await this.flush();for(const off of this.listeners)off();this.entryCleanup.clear();for(const e of this.entries)if(e._state==='pending'){e._state='incomplete';e.response.content._bodyState='unavailable-at-dispose';delete e._response;}for(const e of this.inflight.keys())this._settle(e);this.requestRefs.clear();this.requests=new WeakMap();this.disposed=true;this.context=null;}
 }
 function isTextBuffer(b){if(!b.length)return true;try{new TextDecoder('utf-8',{fatal:true}).decode(b);return !b.includes(0);}catch{return false;}}

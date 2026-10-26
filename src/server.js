@@ -14,7 +14,7 @@ const filters={
   transport:z.enum(['all','http','ws']).optional(),urlIncludes:z.string().max(2048).optional(),
   domains:z.array(z.string().max(255)).max(100).optional(),methods:z.array(z.string().max(20)).max(20).optional(),
   resourceTypes:z.array(z.string().max(40)).max(30).optional(),statusMin:z.number().int().min(0).max(599).optional(),statusMax:z.number().int().min(0).max(599).optional(),
-  since:z.number().nonnegative().optional().describe('Inclusive Unix epoch milliseconds'),until:z.number().nonnegative().optional(),
+  since:z.number().nonnegative().optional().describe('Inclusive Unix epoch milliseconds. HTTP filters request start; WS includes connections with matching start or frame activity and trims frames to the range.'),until:z.number().nonnegative().optional().describe('Inclusive Unix epoch milliseconds; WS frame times in HAR are epoch seconds and converted for comparison.'),
   includeBodies:z.boolean().optional(),redact:z.boolean().optional().describe('Defaults true. false intentionally includes raw session values and credentials.'),
   offset:z.number().int().min(0).optional(),limit:z.number().int().min(1).max(1000).optional()
 };
@@ -57,7 +57,7 @@ export function createServer(options={}){
     deltaX:z.number().min(-10000).max(10000).optional(),deltaY:z.number().min(-10000).max(10000).optional(),key:z.string().max(100).optional(),text:z.string().max(10000).optional(),
     steps:z.number().int().min(1).max(100).optional(),settleMs:z.number().int().min(0).max(5000).optional(),waitMs:z.number().int().min(0).max(10000).optional(),label:z.string().max(150).optional()
   },args=>service.act(args),{destructive:true});
-  register('umcp_mark_controls','Store caller-identified canvas control regions for the current URL/viewport. They are explicitly labeled manual, can appear in overlays and can be clicked by current observation ID. Cleared on frame navigation; clear=true removes current marks.',{
+  register('umcp_mark_controls','Store caller-identified canvas control regions for the current URL/viewport. They are explicitly labeled manual, can appear in overlays and can be clicked by current observation ID. Manual regions are not visually revalidated: clear and recreate them after menus, scrolling or canvas state changes. Cleared on frame navigation; clear=true removes current marks.',{
     ...session,clear:z.boolean().optional(),controls:z.array(z.object({label:z.string().min(1).max(150),x:z.number().min(0),y:z.number().min(0),width:z.number().positive(),height:z.number().positive()})).max(100).optional()
   },args=>service.markControls(args),{openWorld:false});
   register('umcp_network','Inspect measured HTTP and WebSocket activity: query is paginated/compact, detail includes a request by requestId, endpoints groups URLs/protocol families and payload shapes, stats reports limits/losses, mark labels subsequent traffic. All reads redact credentials by default; includeBodies explicitly controls payload visibility.',{

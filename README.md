@@ -100,6 +100,8 @@ Para hacer click en el píxel `(300,180)` de una imagen:
 
 No se promete extraer semántica universal desde WebGL. Máscaras complejas, hit areas particulares, cámaras, transformaciones no soportadas y Shadow DOM cerrado pueden requerir visión. Iframes rotados/skewed se informan sin publicar coordenadas inseguras.
 
+Las regiones de `umcp_mark_controls` son afirmaciones visuales del LLM. Permanecen mientras coincidan URL y viewport, aunque el canvas cambie de menú; una observación nueva no revalida su contenido. Use `clear:true` y vuelva a marcarlas después de cambiar pantalla, menú o desplazamiento. Las acciones disponibles no incluyen mantener presionado el ratón: un control de autoplay que sólo se abra con pulsación prolongada queda fuera de esta versión.
+
 ## Red y HAR
 
 HTTP: URL, método, headers, cuerpo de solicitud/respuesta cuando disponible, status, errores, tiempos y tamaños. Se captura tráfico de todas las páginas del contexto. WebSocket: aperturas, cierres, errores y frames enviados/recibidos, texto y binario base64. Las marcas (`umcp_network` con `operation:"mark"`) y cada acción permiten correlacionar tráfico por timestamp/ID.
@@ -120,6 +122,10 @@ HTTP: URL, método, headers, cuerpo de solicitud/respuesta cuando disponible, st
 ```
 
 También puede filtrar `urlIncludes`, `resourceTypes`, `statusMin/statusMax`, `since/until` (milisegundos Unix) y `transport` (`http`, `ws`, `all`). `offset/limit` limita la selección exportada si se especifica. `umcp_filter_har` acepta los mismos filtros y `inputPath` (archivo local, máximo 512 MiB).
+
+El intervalo es inclusivo. HTTP se selecciona por el inicio de la solicitud. En WS se conserva una conexión si su apertura o algún frame cae dentro del intervalo, y se recortan sus frames a ese intervalo. Así se puede consultar tráfico posterior a una acción aunque el socket se haya abierto antes. Los metadatos, bytes/duración acumulados y `_action` de apertura siguen describiendo la conexión; cada frame conserva su propia `_action`.
+
+`filter.timeRange` en consultas/resúmenes y `log._filter.timeRange` en HAR explican la selección y cuentan frames incluidos, fuera del intervalo y sin hora válida. Esos contadores se calculan antes de paginar. `frameFilter` en cada fila de consulta y `_webSocketFrameFilter` en el HAR/detalle dan el desglose de esa conexión. Los frames deben usar `time` numérico en segundos Unix: no se adivinan unidades ni fechas ausentes. Sin intervalo se conservan también frames sin fecha; un HAR previamente recortado no permite recuperarlos después.
 
 **La selección de exportación y la captura son distintas.** `umcp_open` usa `captureBodies:"activity"` por defecto; seleccione `"all"` desde el comienzo para retener también cuerpos de recursos estáticos. No es posible reconstruir después cuerpos descartados. Los límites por defecto son 10.000 entradas, 256 KiB por cuerpo/frame, 10.000 frames y 64 MiB totales de payload retenido. Los metadatos señalan cuerpos omitidos, truncados, pendientes y entradas descartadas. `full` no significa captura sin límites.
 

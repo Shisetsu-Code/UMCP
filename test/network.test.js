@@ -24,6 +24,67 @@ test('HAR WS frames preserve binary and sanitize text, form and XML payloads', (
  assert.equal(filterHar(har(ws),{includeBodies:false}).log.entries[0]._webSocketMessages[0].data,undefined);
 });
 
+test('HAR time range retains earlier WS connections with inclusive frame activity',()=>{
+ const start=Date.parse('2026-10-26T12:00:00.000Z');
+ const action={id:'opening-action',label:'open',timestamp:start};
+ const ws=entry({_id:'ws',_resourceType:'websocket',_action:action,_webSocketMetadata:{handshakeStatus:'unknown'},_webSocketMessages:[
+  {time:(start+9999)/1000,data:'before'}, {time:(start+10000)/1000,data:'since'},
+  {time:(start+20000)/1000,data:'until'}, {time:(start+20001)/1000,data:'after'}
+ ]});
+ const input=har(ws,entry({_id:'old-http'}),entry({_id:'http',startedDateTime:'2026-10-26T12:00:10.000Z'}));
+ const out=filterHar(input,{since:start+10000,until:start+20000,redact:false});
+ assert.deepEqual(out.log.entries.map(e=>e._id),['ws','http']);
+ assert.deepEqual(out.log.entries[0]._webSocketMessages.map(f=>f.data),['since','until']);
+ assert.deepEqual(out.log.entries[0]._action,action);
+ assert.deepEqual(out.log.entries[0]._webSocketMetadata,{handshakeStatus:'unknown'});
+ assert.deepEqual(out.log.entries[0].response,ws.response);
+ assert.equal(input.log.entries[0]._webSocketMessages.length,4,'filtering must not mutate captured frames');
+ assert.deepEqual(out.log._filter.timeRange.webSocketFrames,{total:4,inRange:2,excludedOutsideRange:2,excludedMissingOrInvalidTime:0});
+ assert.equal(out.log.entries[0]._webSocketFrameFilter.connectionStartedInRange,false);
+ assert.equal(summarizeHar(out).filter.timeRange.since,start+10000,'export summaries preserve the original temporal selection');
+});
+
+test('HAR time range supports one-sided WS bounds and filters before pagination',()=>{
+ const start=Date.parse('2026-10-26T12:00:00.000Z');
+ const ws=entry({_resourceType:'websocket',_webSocketMessages:[{time:(start+10000)/1000,data:'ten'},{time:(start+20000)/1000,data:'twenty'}]});
+ for(const [options,expected] of [[{since:start+20000},['twenty']],[{until:start+10000},['ten']],[{since:start+10000,until:start+10000},['ten']]]){
+  const out=filterHar(har(ws),options);assert.equal(out.log.entries.length,1);assert.deepEqual(out.log.entries[0]._webSocketMessages.map(f=>f.data),expected);
+ }
+ assert.equal(filterHar(har(ws),{since:start+30000}).log.entries.length,0);
+ const paged=filterHar(har(entry(),{...ws,_id:'first'},{...ws,_id:'second'}),{since:start+10000,offset:1,limit:1});
+ assert.deepEqual(paged.log.entries.map(e=>e._id),['second']);
+ assert.equal(paged.log._filter.timeRange.webSocketFrames.inRange,4,'frame counts cover the temporal selection before pagination');
+});
+
+test('HAR time range excludes unknown WS frame times while preserving in-range handshakes',()=>{
+ const frames=[{}, {time:null}, {time:'1'}, {time:NaN}, {time:Infinity}, {time:-1}, {time:1e308}, {time:2,data:'outside'}];
+ const ws=entry({_resourceType:'websocket',startedDateTime:'1970-01-01T00:00:00.000Z',_webSocketMessages:frames});
+ const unknown=entry({_resourceType:'websocket',startedDateTime:'not-a-date',_webSocketMessages:[{}]});
+ const out=filterHar(har(ws,unknown),{since:0,until:0});
+ assert.equal(out.log.entries.length,1);
+ assert.deepEqual(out.log.entries[0]._webSocketMessages,[]);
+ assert.equal(out.log.entries[0]._webSocketFrameFilter.connectionStartedInRange,true);
+ assert.equal(out.log.entries[0]._webSocketFrameFilter.excludedMissingOrInvalidTime,7);
+ assert.equal(out.log._filter.timeRange.webSocketFrames.excludedMissingOrInvalidTime,8,'omissions from excluded connections remain disclosed');
+ assert.equal(out.log._filter.timeRange.webSocketFrames.excludedOutsideRange,1);
+ assert.equal(filterHar(har(unknown),{until:0}).log.entries.length,0,'invalid connection timestamps must not become epoch zero');
+ assert.equal(filterHar(har(ws)).log.entries[0]._webSocketMessages.length,8,'unbounded exports preserve unknown timestamps');
+ const zero=filterHar(har({...unknown,_webSocketMessages:[{time:0,data:'epoch'}]}),{since:0,until:0});
+ assert.equal(zero.log.entries[0]._webSocketMessages[0].data,'epoch');
+});
+
+test('recorder temporal views expose selected WS frames without rewriting capture or opening action',()=>{
+ const start=Date.parse('2026-10-26T12:00:00.000Z'),r=new NetworkRecorder();
+ r.entries.push(entry({_id:'ws',_resourceType:'websocket',_action:{id:'opening'},_webSocketMessages:[{time:start/1000,data:'old'},{time:(start+10000)/1000,data:'new',_action:{id:'click'}}]}));
+ const options={transport:'ws',since:start+10000};
+ const query=r.query(options);
+ assert.equal(query.total,1);assert.equal(query.entries[0].frames,1);assert.equal(query.entries[0].action.id,'opening');
+ assert.equal(query.filter.timeRange.webSocketFrames.excludedOutsideRange,1);
+ const detail=r.detail('ws',options);assert.deepEqual(detail._webSocketMessages.map(f=>f.data),['new']);assert.equal(detail._webSocketFrameFilter.returned,1);
+ const endpoints=r.endpoints(options);assert.equal(endpoints.endpoints[0].frames,1);assert.equal(endpoints.filter.timeRange.since,start+10000);
+ assert.equal(r.exportHar().log.entries[0]._webSocketMessages.length,2);
+});
+
 test('summary and family detection report evidence without inventing game operations', () => {
  const out=summarizeHar(har(entry(),entry({_resourceType:'websocket',_webSocketMessages:[]})));
  assert.equal(out.entries,2); assert.equal(out.webSockets,1); assert.ok(Array.isArray(out.endpoints));
