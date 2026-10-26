@@ -1,5 +1,7 @@
 # Validación de UMCP
 
+**Actualización:** el [recorrido posterior mediante el propio MCP](control-walkthrough.md) amplía esta prueba de inicialización: 59/59 pruebas de núcleo, controles ejercitados en cinco demos y tres bloqueos locales. Este documento conserva la evidencia histórica del código `4044ac0`.
+
 Código evaluado: [`4044ac0`](https://github.com/Shisetsu-Code/UMCP/commit/4044ac0f3e241371ce18388431bf37a362ecb79c). Fecha: 2026-10-26.
 
 **Núcleo: 54/54 pruebas aprobadas, 0 fallos y 0 omitidas.** El [cuarto run de Actions, 40374185931](https://github.com/Shisetsu-Code/UMCP/actions/runs/40374185931), termina globalmente en `failure` por cuatro bloqueos externos; su job de núcleo está aprobado. Cuatro demos aportan canvas y tráfico de inicialización. Su pantalla jugable y sus acciones todavía no están validadas.

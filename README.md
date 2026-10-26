@@ -2,7 +2,7 @@
 
 Servidor MCP **local**, por **stdio**, para que un LLM controle Chromium, detecte controles y analice HTTP/WebSocket. No requiere una API de IA: el modelo que conecta al MCP interpreta las imágenes y decide las acciones.
 
-**Validación del 26/10/2026:** el núcleo pasó **54/54 pruebas** en [GitHub Actions](https://github.com/Shisetsu-Code/UMCP/actions/runs/40374185931). Las demos reales aportaron tres introducciones visibles, una pantalla de carga con inicialización y cuatro bloqueos externos. La aprobación de todos los juegos y sus acciones sigue pendiente. [Resultados, límites y capturas](docs/validation.md).
+**Validación del 26/10/2026:** el núcleo pasó **59/59 pruebas** en [GitHub Actions](https://github.com/Shisetsu-Code/UMCP/actions/runs/40380024508). Un recorrido mediante el propio MCP permitió navegar controles y realizar un giro demo en **cinco juegos**; tres proveedores siguieron bloqueados. Se comprobaron visualmente cuatro resultados finales; el final de la animación de Games Global quedó pendiente. La detección de canvas requiere visión y la cobertura es parcial. El workflow global conserva fallos por bloqueos externos de sus smoke tests. [Recorrido, correcciones y límites](docs/control-walkthrough.md).
 
 ## Instalación
 
@@ -158,6 +158,7 @@ El smoke exige un canvas y tráfico válido del endpoint esperado para devolver 
 - [Hallazgos de los 18 HAR](docs/har-findings.md)
 - [Diseño y límites](docs/superpowers/specs/2026-10-26-umcp-design.md)
 - [Resultados de validación](docs/validation.md)
+- [Recorrido real de controles mediante el propio MCP](docs/control-walkthrough.md)
 
 ## Evolución a Cloudflare
 

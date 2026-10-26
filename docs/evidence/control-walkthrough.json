@@ -1,0 +1,2660 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "title": "UMCP public demo control walkthrough evidence",
+  "validatedCodeCommit": "72cf840f6f838f1470f53220ba6d380c35dc7cee",
+  "scope": "Bounded walkthroughs and selected protocol evidence; one normal demo spin in each accessible game. These results do not establish exhaustive gameplay coverage or provider availability.",
+  "runtime": {
+    "browserInteraction": "Actual UMCP MCP tools over stdio only",
+    "headless": true,
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "tlsVerificationEnabled": true,
+    "trustSetup": "Imported the existing environment CA into an isolated temporary browser trust store; TLS certificate verification remained enabled."
+  },
+  "coverage": {
+    "providersAttempted": 8,
+    "accessible": 5,
+    "externallyBlocked": 3,
+    "demoSpins": 5,
+    "verifiedTerminalVisualResults": 4,
+    "terminalVisualUnverified": [
+      "GamesGlobal"
+    ],
+    "featurePurchases": 0,
+    "autoplayRunsStarted": 0
+  },
+  "verification": {
+    "localCoreTests": {
+      "passed": 59,
+      "total": 59,
+      "durationMs": 18218.109974
+    },
+    "githubActions": {
+      "runId": 40380024508,
+      "coreJobId": 121773430316,
+      "coreJobStatus": "success",
+      "coreTestsPassed": 59,
+      "coreTestsTotal": 59,
+      "coreTestsDurationMs": 6406.104399,
+      "workflowStatus": "failure",
+      "failedExternalDemoJobIds": [
+        121773656706,
+        121773657710
+      ],
+      "qualification": "Core tests passed; the complete workflow failed in external demo jobs and is not globally green."
+    },
+    "finalActualMcpProofs": [
+      {
+        "recordSet": "root",
+        "record": 110,
+        "tool": "umcp_filter_har",
+        "sourceRecord": 40,
+        "preset": "ws",
+        "transport": "ws",
+        "includeBodies": true,
+        "summaryMatchesArtifactFilter": true,
+        "entries": 1,
+        "httpEntries": 0,
+        "webSocketEntries": 1,
+        "webSocketFrames": 4,
+        "frameSelection": {
+          "total": 66,
+          "inRange": 4,
+          "excludedOutsideRange": 62,
+          "excludedMissingOrInvalidTime": 0
+        },
+        "intervalFromSpin035Ms": [
+          0,
+          1000
+        ],
+        "inclusive": true
+      },
+      {
+        "recordSet": "root",
+        "record": 111,
+        "tool": "umcp_filter_har",
+        "sourceRecord": 107,
+        "preset": "metadata",
+        "transport": "http",
+        "includeBodies": false,
+        "summaryMatchesArtifactFilter": true,
+        "entries": 1,
+        "httpEntries": 1,
+        "webSocketEntries": 0,
+        "webSocketFrames": 0,
+        "frameSelection": {
+          "total": 0,
+          "inRange": 0,
+          "excludedOutsideRange": 0,
+          "excludedMissingOrInvalidTime": 0
+        },
+        "bodyTextAbsent": true,
+        "bodyDescriptorsRetained": true
+      }
+    ],
+    "artifactDownload": {
+      "record": 91,
+      "tool": "umcp_artifact",
+      "sourceFilteredArtifactRecord": 71,
+      "matchesFilteredArtifactVerified": true,
+      "offset": 0,
+      "bytes": 22033,
+      "bytesRead": 22033,
+      "nextOffset": null,
+      "sameBytes": true,
+      "sha256": "9181441e31ae788934652928759e53c71442381759f881a9a9510ecba5641be8",
+      "scope": "Complete byte transfer of the filtered four-frame GPAS artifact from record 071; not the full 66-frame capture."
+    },
+    "finalSessionCheck": {
+      "recordSet": "root",
+      "record": 112,
+      "remainingSessions": 0
+    }
+  },
+  "providers": [
+    {
+      "provider": "GPAS",
+      "access": "accessible",
+      "recordSet": "root",
+      "sequenceRange": [
+        1,
+        41
+      ],
+      "demoSpins": 1,
+      "terminalVisualVerified": true,
+      "actions": [
+        "Intro entered",
+        "Rules opened and closed using DOM controls",
+        "Manual bet selector opened; bet changed 5.00 to 4.00",
+        "All four displayed shop options browsed without purchase",
+        "Sound muted",
+        "One normal spin"
+      ],
+      "visualResult": {
+        "balanceBefore": 10000,
+        "bet": 4,
+        "win": 0,
+        "balanceAfter": 9996,
+        "finalRecord": 36
+      },
+      "transport": {
+        "record": 39,
+        "resourceType": "websocket",
+        "allFrames": 66,
+        "allDirections": {
+          "receive": 43,
+          "send": 23
+        },
+        "applicationMessagePrefix": "3:::",
+        "heartbeatPayload": "2::",
+        "opcode": 1
+      },
+      "commandRequest": {
+        "record": 39,
+        "zeroBasedFrameIndex": 56,
+        "type": "com.pt.casino.platform.game.GameCommand",
+        "gameDataType": "com.pt.gpas.platform.game.OgwCorosinGameCommand",
+        "gameDataCommandCode": 40021,
+        "autoplay": false,
+        "betCost": 400,
+        "betType": "default",
+        "featureType": "default",
+        "parameterKeysInCapturedOuterPayload": "redacted by generic key redaction"
+      },
+      "commandResponse": {
+        "record": 39,
+        "zeroBasedFrameIndex": 57,
+        "_type": "com.pt.casino.platform.game.GameCommand",
+        "stakeAmount": 400,
+        "betCost": 400,
+        "winAmount": 0,
+        "betType": "default",
+        "featureType": "default",
+        "gameRoundClosed": true,
+        "packedGameDataType": "gpas:packed:zlib",
+        "decodedSelectedFields": {
+          "_type": "ryota:GameResponse",
+          "_ver": "3",
+          "stake": 400,
+          "totalWinAmount": 0,
+          "playIndex": 1,
+          "nextRound": "BET_END_STATE_IDENTIFIER",
+          "isWinCapped": false,
+          "stakeCostName": "default",
+          "baseCostMultiplier": 40
+        },
+        "decodedRequestParameters": {
+          "extraBetSupported": "true",
+          "extraBetActive": "false"
+        }
+      },
+      "balance": {
+        "record": 39,
+        "lastPreSpinFrameIndex": 55,
+        "protocolAmountBefore": 1000000,
+        "postSpinFrameIndices": [
+          58,
+          62,
+          65
+        ],
+        "protocolAmountAfter": 999600,
+        "uiBefore": 10000,
+        "uiAfter": 9996,
+        "uiStake": 4,
+        "terminalScreenshotRecord": 36,
+        "unitMapping": "Observed UI money values equal protocol amounts divided by 100 in this run; this is an evidence-based inference, not a cross-provider guarantee."
+      },
+      "exportVerification": {
+        "record": 40,
+        "preset": "ws",
+        "redact": true,
+        "entries": 1,
+        "httpEntries": 0,
+        "webSocketEntries": 1,
+        "webSocketFrames": 66,
+        "frameEvidence": "frames-present",
+        "framesExactlyMatchRecord039": true,
+        "spinAssociatedFrames": 10,
+        "globalCaptureComplete": false,
+        "globalTruncatedBodyCount": 6,
+        "note": "The global capture flags six truncated bodies. All 66 retained WS frames are marked captured; session-wide completeness must not be claimed."
+      },
+      "limitations": [
+        {
+          "name": "Manual canvas marks survive a menu transition at the same URL and viewport",
+          "records": [
+            13,
+            14,
+            15,
+            16,
+            17
+          ],
+          "evidence": "Record 013 adds four manual regions. Record 014 returns them on the main game. Record 015 opens the bet selector. Record 016 shows the selector but returns the identical four manual controls, including a spin label at a location now used for confirmation. Record 017 explicitly clears them.",
+          "identicalManualControlObjectsVerified": true,
+          "manualControlCount": 4,
+          "consequence": "Fresh observation metadata does not make caller-provided canvas labels semantically current after an in-canvas state change. Clear and remark when the menu changes."
+        },
+        {
+          "name": "Pre-fix ws since filter omits an older connection with new frames",
+          "records": [
+            35,
+            38,
+            39,
+            40
+          ],
+          "evidence": "Record 038 requests preset ws with since equal to the record 035 action timestamp and returns entries=[], total=0. Record 039 retains 10 action-associated frames after that timestamp on an already-open WebSocket. Record 040 exports all 66 frames, including those 10.",
+          "returnedEntries": 0,
+          "retainedLaterFrames": 10,
+          "offsetRangeMs": [
+            72,
+            30223
+          ],
+          "status": "Historical omission in record 038. Final restarted MCP check 110 selects four frames in the first 1000 ms and reports the correct ws preset and transport."
+        }
+      ],
+      "frameAssociationLimit": "Labels persist on subsequent background frames until another action. The 10 associated frames include heartbeat and repeated balance traffic; they are not 10 separate spin operations.",
+      "images": [
+        "controls/gpas-final.jpeg",
+        "controls/gpas-manual-overlay.jpeg",
+        "controls/gpas-bet-menu.jpeg"
+      ]
+    },
+    {
+      "provider": "NGM",
+      "access": "accessible",
+      "recordSet": "root",
+      "sequenceRange": [
+        42,
+        70
+      ],
+      "demoSpins": 1,
+      "terminalVisualVerified": true,
+      "actions": [
+        {
+          "actionRecord": 44,
+          "evidenceRecords": [
+            43,
+            45
+          ],
+          "input": "click via screenshot image coordinates",
+          "intent": "Continue past intro",
+          "observedOutcome": "Main game displayed.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 46,
+          "evidenceRecords": [
+            45,
+            47,
+            48
+          ],
+          "input": "click detected DOM settingsButtonDesktop control",
+          "intent": "Open settings",
+          "observedOutcome": "Input delivered without a tool error. The subsequent view did not display a settings popup; pages remained 1. A settings-open outcome is not demonstrated.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 49,
+          "evidenceRecords": [
+            50,
+            51
+          ],
+          "input": "click via screenshot image coordinates",
+          "intent": "Open info/paytable",
+          "observedOutcome": "Paytable opened.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 52,
+          "evidenceRecords": [
+            51,
+            53
+          ],
+          "input": "click via cropped WebP image coordinates",
+          "intent": "Next paytable page",
+          "observedOutcome": "Next paytable page displayed. Image point [775,210] mapped to page point [1025,355].",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 54,
+          "evidenceRecords": [
+            53,
+            55
+          ],
+          "input": "click via cropped WebP image coordinates",
+          "intent": "Close paytable",
+          "observedOutcome": "Main game returned. Image point [750,26] mapped to page point [1000,171].",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 56,
+          "evidenceRecords": [
+            55,
+            57
+          ],
+          "input": "click via screenshot image coordinates",
+          "intent": "Decrease active lines from 25",
+          "observedOutcome": "24 lines selected; line bet 0.10, total bet 2.40.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 58,
+          "evidenceRecords": [
+            59
+          ],
+          "input": "click via screenshot image coordinates",
+          "intent": "Open autoplay options without starting",
+          "observedOutcome": "Autoplay options displayed; no autoplay count started.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 60,
+          "evidenceRecords": [
+            61
+          ],
+          "input": "repeat click via screenshot image coordinates",
+          "intent": "Dismiss autoplay options",
+          "observedOutcome": "The repeat click did not dismiss the menu.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 62,
+          "evidenceRecords": [
+            63
+          ],
+          "input": "hover away via screenshot image coordinates",
+          "intent": "Dismiss autoplay menu",
+          "observedOutcome": "Menu dismissed.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 64,
+          "evidenceRecords": [
+            65,
+            68
+          ],
+          "input": "single click via screenshot image coordinates",
+          "intent": "One demo spin at total bet 2.40 and 24 lines",
+          "observedOutcome": "Final screenshot shows line bet 0.10, 24 lines, total bet 2.40, win 8.50, credits 1006.10.",
+          "toolReturnedError": false
+        }
+      ],
+      "visualResult": {
+        "spinActionRecord": 64,
+        "finalScreenshotRecord": 68,
+        "corroboratingDOMObservationRecord": 65,
+        "currency": "EUR",
+        "lineBet": 0.1,
+        "lines": 24,
+        "totalBet": 2.4,
+        "win": 8.5,
+        "creditsBefore": 1000.0,
+        "creditsAfter": 1006.1,
+        "arithmeticCheck": "1000.00 - 2.40 + 8.50 = 1006.10",
+        "evidenceType": "Displayed UI result; not a captured wager-response interpretation."
+      },
+      "croppedImageMapping": {
+        "screenshotRecords": [
+          51,
+          53
+        ],
+        "format": "webp",
+        "size": [
+          790,
+          420
+        ],
+        "region": {
+          "x": 250,
+          "y": 145,
+          "width": 790,
+          "height": 420
+        },
+        "cssPerPixel": [
+          1,
+          1
+        ],
+        "actionRecords": [
+          52,
+          54
+        ],
+        "coordinateTransformMatchesVerified": true
+      },
+      "network": {
+        "record066": {
+          "preset": "ws",
+          "entries": 1,
+          "webSocketFrames": 4,
+          "state": "closed",
+          "taggedWithSpinAction": false,
+          "socketLifetimeMs": 1744,
+          "socketClosedBeforeSpinMs": 518554,
+          "interpretation": "Four frames belong to a startup connection that was already closed before action 064."
+        },
+        "record067": {
+          "preset": "activity",
+          "sinceEqualsSpinActionTimestamp": true,
+          "entries": 0,
+          "total": 0
+        },
+        "record069": {
+          "preset": "activity",
+          "sinceEqualsSpinActionTimestamp": true,
+          "redacted": true,
+          "entriesInExportedFile": 0,
+          "captureComplete": false,
+          "losses": {
+            "evictedEntries": 0,
+            "evictedFrames": 0,
+            "droppedFrames": 0,
+            "truncatedBodies": 6,
+            "omittedBodies": 0,
+            "bodyErrors": 1
+          },
+          "pendingEntries": 1,
+          "flushTimeouts": 1
+        },
+        "conclusion": "No captured request or response in the spin-scoped query/export establishes a wager endpoint or operation. Empty results do not prove universal offline execution or absence of a remote operation."
+      },
+      "limitations": [
+        {
+          "records": [
+            45,
+            46,
+            47,
+            48
+          ],
+          "finding": "A successful tool action establishes input delivery, not that settings opened. The observed follow-up remained unchanged and had one page."
+        },
+        {
+          "records": [
+            58,
+            59,
+            60,
+            61,
+            62,
+            63
+          ],
+          "finding": "Autoplay menu dismissal needed hover away; repeating the opener click did not close it. No autoplay run was started."
+        },
+        {
+          "records": [
+            43,
+            45,
+            47,
+            50,
+            55,
+            59,
+            65
+          ],
+          "finding": "Observations report needsVision=true, partial canvas semantics, and a frame without visible bounds. Core game actions were selected visually. A single observation sample does not establish a stability check."
+        },
+        {
+          "records": [
+            66,
+            67,
+            69
+          ],
+          "finding": "Only startup WebSocket traffic was retained. The filtered spin HAR is empty, and global capture metadata records six truncated bodies, one body error and one pending entry/flush timeout. This run cannot establish a wager protocol."
+        }
+      ],
+      "images": [
+        "controls/ngm-help-crop.webp",
+        "controls/ngm-final.jpeg"
+      ]
+    },
+    {
+      "provider": "RubyPlay",
+      "access": "accessible",
+      "recordSet": "root",
+      "sequenceRange": [
+        72,
+        109
+      ],
+      "demoSpins": 1,
+      "terminalVisualVerified": true,
+      "launch": {
+        "officialPageAttempts": {
+          "records": [
+            72,
+            73,
+            74,
+            75,
+            76
+          ],
+          "firstHTTPStatus": 503,
+          "reloadHTTPStatus": 503,
+          "outcome": "Official public page returned HTTP 503 on both observed attempts."
+        },
+        "publicLauncher": {
+          "record": 77,
+          "httpStatus": 200,
+          "mode": "fun",
+          "provenance": "Root verified the full launcher src in public HTML against the provided HAR. Root confirmed no authentication parameters. The URL and all query values except the mode description are omitted from this summary."
+        }
+      },
+      "actions": [
+        {
+          "actionRecord": 80,
+          "evidenceRecords": [
+            79,
+            81
+          ],
+          "input": "click using normalized coordinates",
+          "intent": "Continue past intro",
+          "outcome": "Intro continued; hardware acceleration warning displayed.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 82,
+          "evidenceRecords": [
+            81,
+            83
+          ],
+          "input": "click detected DOM OK button",
+          "intent": "Dismiss hardware acceleration warning",
+          "outcome": "Warning dismissed and main game displayed.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 84,
+          "evidenceRecords": [
+            85,
+            86
+          ],
+          "input": "click using screenshot image coordinates",
+          "intent": "Open visual menu",
+          "outcome": "Paytable loaded after an initial loading observation.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 87,
+          "evidenceRecords": [
+            88
+          ],
+          "input": "scroll using screenshot image coordinates",
+          "intent": "Scroll paytable content",
+          "outcome": "Scrolled paytable content inspected.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 89,
+          "evidenceRecords": [
+            90,
+            92
+          ],
+          "input": "click using screenshot image coordinates",
+          "intent": "Switch to help/rules tab",
+          "outcome": "Help/rules loaded after an initial loading observation.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 93,
+          "evidenceRecords": [
+            94
+          ],
+          "input": "click using screenshot image coordinates",
+          "intent": "Close rules menu",
+          "outcome": "Main game displayed.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 95,
+          "evidenceRecords": [
+            94,
+            96
+          ],
+          "input": "click using screenshot image coordinates",
+          "intent": "Decrease demo bet",
+          "outcome": "Bet changed from 1.00 to 0.50.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 97,
+          "evidenceRecords": [
+            98
+          ],
+          "input": "click using screenshot image coordinates",
+          "intent": "Inspect Buy Feature offer",
+          "outcome": "One offer displayed with cost 25.00. No purchase executed.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 99,
+          "evidenceRecords": [
+            100,
+            101
+          ],
+          "input": "click using screenshot image coordinates",
+          "intent": "Close Buy Feature dialog",
+          "outcome": "Screenshot 100 was transitional; screenshot 101 confirmed the dialog closed.",
+          "toolReturnedError": false
+        },
+        {
+          "actionRecord": 102,
+          "evidenceRecords": [
+            103,
+            105,
+            106
+          ],
+          "input": "one click using screenshot image coordinates",
+          "intent": "One normal demo spin at stake 0.50",
+          "outcome": "Win 0.15 and balance 9999.65 displayed; spin control restored.",
+          "toolReturnedError": false
+        }
+      ],
+      "visualResult": {
+        "spinActionRecord": 102,
+        "evidenceRecords": [
+          103,
+          106
+        ],
+        "startingBalance": 10000.0,
+        "bet": 0.5,
+        "displayedWin": 0.15,
+        "endingBalance": 9999.65,
+        "spinControlRestored": true,
+        "arithmeticCheck": "10000.00 - 0.50 + 0.15 = 9999.65",
+        "winEvidence": "Displayed win only; opaque response binary was not decoded."
+      },
+      "protocol": {
+        "detailRecord": 105,
+        "associatedActionRecord": 102,
+        "actionAssociationVerified": true,
+        "method": "POST",
+        "httpStatus": 200,
+        "requestBodyState": "captured",
+        "responseBodyState": "captured",
+        "requestSelectedFields": {
+          "action": "spin",
+          "bet": 5,
+          "funModeData.currentBalanceSubUnit": 1000000
+        },
+        "responseSelectedFields": {
+          "status": "ok",
+          "data.next_action": "spin",
+          "data.player.balance": 999965,
+          "funModeData.currentBalanceSubUnit": 999965
+        },
+        "binaryPresent": true,
+        "binaryDecoded": false,
+        "interpretationLimit": "Raw request bet=5 is retained without asserting an undocumented bet-unit conversion. Response balances 999965 align with the displayed 9999.65 in this run. next_action=spin supports the observed return to a spin-ready UI; it does not reveal the undecoded binary outcome."
+      },
+      "networkExport": {
+        "record": 107,
+        "exportedFileEntries": 1,
+        "httpEntries": 1,
+        "webSocketEntries": 0,
+        "webSocketFrames": 0,
+        "redacted": true,
+        "captureComplete": false,
+        "losses": {
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 2,
+          "omittedBodies": 4,
+          "bodyErrors": 7
+        },
+        "pendingEntries": 0,
+        "flushTimeouts": 0,
+        "scope": "Selected spin traffic; global capture loss metadata is preserved and completeness is not asserted."
+      },
+      "observationLimitations": [
+        {
+          "records": [
+            79,
+            81,
+            83,
+            86,
+            92,
+            98,
+            103
+          ],
+          "finding": "Inspected observations returned a generic DOM body and the warning OK button when present. They did not return semantic canvas button controls; core game actions required visual coordinates."
+        },
+        {
+          "records": [
+            86,
+            92
+          ],
+          "finding": "Visible text was limited to 1000 characters. The returned rules/paytable text is not a complete extraction."
+        },
+        {
+          "records": [
+            85,
+            90
+          ],
+          "finding": "needsVision=false appeared during loading observations. This flag alone did not establish ready or fully interpreted game controls."
+        },
+        {
+          "records": [
+            86
+          ],
+          "finding": "stable=true across three sampled observations establishes the reported observation stability only; it does not prove the canvas animation had stopped."
+        },
+        {
+          "records": [
+            99,
+            100,
+            101
+          ],
+          "finding": "A successful close click was followed by a transitional screenshot; a later screenshot was required to confirm the dialog had closed."
+        },
+        {
+          "records": [
+            97,
+            98,
+            99
+          ],
+          "finding": "Only the displayed Buy Feature offer was inspected. The offer was not purchased."
+        }
+      ],
+      "cleanup": {
+        "closeRecord": 108,
+        "closeSucceeded": true,
+        "sessionsRecord": 109,
+        "remainingSessions": 0
+      },
+      "images": [
+        "controls/rubyplay-shop.jpeg",
+        "controls/rubyplay-final.jpeg"
+      ]
+    },
+    {
+      "provider": "GamesGlobal",
+      "game": "Gold Blitz Ultimate",
+      "access": "accessible",
+      "recordSet": "other",
+      "sequenceRange": [
+        11,
+        33
+      ],
+      "demoSpins": 1,
+      "terminalVisualVerified": false,
+      "actions": [
+        {
+          "sequence": 16,
+          "action": "Open settings"
+        },
+        {
+          "sequence": 18,
+          "action": "Open rules; follow-up observation 21 revealed iframe text and controls"
+        },
+        {
+          "sequence": 22,
+          "action": "Close rules"
+        },
+        {
+          "sequence": 24,
+          "action": "Open bet selector"
+        },
+        {
+          "sequence": 26,
+          "action": "Change bet 2.00 to 0.20"
+        },
+        {
+          "sequence": 29,
+          "action": "One visually grounded demo spin"
+        }
+      ],
+      "visualEvidence": {
+        "initialCredits": 100000,
+        "selectedBet": 0.2,
+        "immediateCreditsAfterSpin": 99999.8,
+        "terminalAnimationAndPayoutSeparatelyObserved": false
+      },
+      "protocol": {
+        "scope": "Selected non-sensitive protocol evidence associated with the single GamesGlobal demo spin. No terminal visual result is inferred.",
+        "sourceRecords": [
+          "029-umcp_act.json",
+          "031-umcp_network.json",
+          "032-umcp_export_har.json"
+        ],
+        "sourceHarEntryZeroBasedIndex": 1,
+        "actionAssociationVerifiedAgainstRecord029": true,
+        "transport": {
+          "method": "POST",
+          "resourceType": "fetch",
+          "responseStatus": 200,
+          "requestBodyState": "captured",
+          "responseBodyState": "captured"
+        },
+        "request": {
+          "packetType": 7,
+          "isBase64Encoded": false,
+          "payloadFormat": "XML-like string in JSON packet.payload",
+          "selectedAttributes": {
+            "packet.payload /Pkt/Request/@verbex": "Spin",
+            "packet.payload /Pkt/Request/@action": "Play",
+            "packet.payload /Pkt/Request/@name": "BaseGame",
+            "packet.payload /Pkt/Request/@abindex": "1",
+            "packet.payload /Pkt/Request/@denom": "2",
+            "packet.payload /Pkt/Request/@level": "1",
+            "packet.payload /Pkt/Request/@wager": "20"
+          }
+        },
+        "response": {
+          "packetType": 8,
+          "isBase64Encoded": false,
+          "selectedFinancialFields": {
+            "context.financials.betAmount": 0.2,
+            "context.financials.payoutAmount": 0,
+            "context.financials.totalTransactionBetAmount": 0.2,
+            "context.financials.totalTransactionPayoutAmount": 0
+          },
+          "echoedRequestAttributes": {
+            "packet.payload Requested/@action": "Play",
+            "packet.payload Requested/@name": "BaseGame",
+            "packet.payload Requested/@abindex": "1",
+            "packet.payload Requested/@denom": "2",
+            "packet.payload Requested/@level": "1",
+            "packet.payload Requested/@wager": "20"
+          },
+          "observedStageFields": [
+            {
+              "stageIndex": "0",
+              "type": "SimpleStage",
+              "name": "BaseGame",
+              "played": "1",
+              "remain": "0",
+              "payout": "0",
+              "total": "0"
+            },
+            {
+              "stageIndex": "1",
+              "type": "SimpleStage",
+              "name": "BaseGame",
+              "played": "0",
+              "remain": "1",
+              "payout": "0",
+              "total": "0",
+              "avail": "True"
+            }
+          ],
+          "observedBooleans": {
+            "context.isReadOnly": false,
+            "packet.payload Core/@new": "True",
+            "packet.payload Stage[index=1]/@avail": "True"
+          },
+          "completionQualification": "No explicit wager-complete response boolean was identified. Stage 0 reports played=1 and remain=0; stage 1 reports played=0, remain=1 and avail=True. These are captured protocol fields, not a verified terminal screenshot."
+        },
+        "separateClientTelemetry": {
+          "sourceHarEntryZeroBasedIndex": 3,
+          "method": "POST",
+          "responseStatus": 201,
+          "fields": {
+            "EventInfo.isnewwager": true,
+            "EventInfo.iswagercomplete": true,
+            "EventInfo.gamemode": "basegame"
+          },
+          "qualification": "iswagercomplete=true is in a client telemetry request, not the game-command server response."
+        },
+        "interpretationLimits": [
+          "The request contains raw denomination=2, level=1, wager=20. The response financials state betAmount=0.2; no undocumented monetary-unit mapping is asserted.",
+          "Only the observed request action Play / BaseGame / Spin is reported; advertised possible actions were not executed or validated.",
+          "No URLs, cookies, tokens, session/player/request/correlation identifiers, XML Id attributes, transaction numbers, or raw payload text are retained.",
+          "The captured XML-like strings are not well-formed for a strict XML parser. Selected attributes were read with a tolerant parser and the echoed request fields match exactly."
+        ]
+      },
+      "limitations": [
+        "Observation and screenshot state differed during asynchronous rules loading.",
+        "Underlying settings text remained while a rules overlay covered it.",
+        "Generic SVG path labels required visual grounding for spin.",
+        "PixiJS was detected, but its scene was inaccessible.",
+        "Activity capture included assets and reported 24 truncated bodies and 3 omitted bodies."
+      ],
+      "images": [
+        "controls/gamesglobal-bet-selector.png",
+        "controls/gamesglobal-rules.png"
+      ]
+    },
+    {
+      "provider": "ELK",
+      "game": "Cluster Kingdom",
+      "access": "accessible",
+      "recordSet": "elk",
+      "sequenceRange": [
+        1,
+        45
+      ],
+      "demoSpins": 1,
+      "terminalVisualVerified": true,
+      "actions": [
+        {
+          "sequence": 3,
+          "action": "confirm adult age",
+          "grounding": "DOM label YES, I AM",
+          "result": "Age gate dismissed; user age confirmed by root"
+        },
+        {
+          "sequence": 5,
+          "action": "launch public demo",
+          "grounding": "DOM label PLAY",
+          "result": "Game iframe opened"
+        },
+        {
+          "sequence": 10,
+          "action": "enter introduction",
+          "grounding": "image x=640 y=301",
+          "result": "Start arrow accepted; intro loaded and progressed automatically to game"
+        },
+        {
+          "sequence": 14,
+          "action": "open game menu",
+          "grounding": "image x=139 y=138",
+          "result": "Menu/paytable page opened"
+        },
+        {
+          "sequence": 16,
+          "action": "open Rules",
+          "grounding": "image x=736 y=573",
+          "result": "Rules text displayed and extracted from frame 1"
+        },
+        {
+          "sequence": 18,
+          "action": "open Settings",
+          "grounding": "image x=544 y=573",
+          "result": "Settings displayed"
+        },
+        {
+          "sequence": 20,
+          "action": "turn Music off",
+          "grounding": "image x=567 y=440",
+          "result": "Music changed from blue/right/on to gray/left/off"
+        },
+        {
+          "sequence": 22,
+          "action": "close menu",
+          "grounding": "image x=1151 y=125",
+          "result": "Returned to game"
+        },
+        {
+          "sequence": 24,
+          "action": "open Bet selector",
+          "grounding": "image x=140 y=567",
+          "result": "Bet grid displayed; EUR 1.00 initially highlighted"
+        },
+        {
+          "sequence": 26,
+          "action": "choose EUR 0.20",
+          "grounding": "image x=480 y=201",
+          "result": "EUR 0.20 highlighted; BET label changed from EUR 1.00 to EUR 0.20; demo balance remained EUR 5000.00"
+        },
+        {
+          "sequence": 28,
+          "action": "close Bet selector",
+          "grounding": "image x=1151 y=125",
+          "result": "Returned to game"
+        },
+        {
+          "sequence": 30,
+          "action": "open X-iter shop",
+          "grounding": "image x=126 y=435",
+          "result": "Shop displayed; no option or purchase button clicked"
+        },
+        {
+          "sequence": 32,
+          "action": "close X-iter without purchase",
+          "grounding": "image x=184 y=429",
+          "result": "Normal game restored; demo balance EUR 5000.00 and bet EUR 0.20"
+        },
+        {
+          "sequence": 35,
+          "action": "single normal demo spin",
+          "grounding": "image x=1091 y=529",
+          "result": "One normal spin; completed with EUR 0.64 win and EUR 5000.44 demo balance"
+        }
+      ],
+      "settingsObserved": {
+        "Sound on": "on",
+        "Game sounds": "on",
+        "Music": "changed on to off",
+        "Quick play": "off",
+        "Show in coins": "off"
+      },
+      "betSelectorEUR": [
+        0.2,
+        0.4,
+        0.6,
+        1.0,
+        2.0,
+        4.0,
+        6.0,
+        10.0,
+        20.0,
+        40.0,
+        60.0,
+        100.0
+      ],
+      "shopOffersAtBet020": [
+        {
+          "label": "SUPER BONUS",
+          "priceEUR": 100.0
+        },
+        {
+          "label": "BONUS",
+          "priceEUR": 20.0
+        },
+        {
+          "label": "MINI BONUS",
+          "priceEUR": 10.0
+        },
+        {
+          "label": "circular-arrow icon; no text label observed",
+          "priceEUR": 2.0
+        },
+        {
+          "label": "BONUS HUNT",
+          "priceEUR": 0.6
+        }
+      ],
+      "visualResult": {
+        "count": 1,
+        "betEUR": 0.2,
+        "initialDemoBalanceEUR": 5000.0,
+        "winEUR": 0.64,
+        "finalDemoBalanceEUR": 5000.44,
+        "outcomeVisibleAfterMs": 22146,
+        "cleanFinalScreenshotAfterMs": 54836,
+        "explicitPostSpinWaitMs": 8000,
+        "noAdditionalSpinClicks": true,
+        "note": "Win and restored spin control were observed at 22.1 seconds. A later read-only screenshot after analysis showed the neutral final board; there was no additional requested wait after the outcome screenshot."
+      },
+      "visualEvidenceRecords": {
+        "beforeSpin": 33,
+        "spin": 35,
+        "outcomeAndRestoredSpinControl": 40,
+        "neutralFinalState": 41
+      },
+      "network": {
+        "normalSpin": {
+          "method": "POST",
+          "httpStatus": 200,
+          "requestMime": "text/xml; charset=UTF-8",
+          "responseMime": "application/xml"
+        },
+        "settlement": {
+          "method": "POST",
+          "httpStatus": 200
+        },
+        "webSocketEntries": 0,
+        "minimalExportEntries": 2,
+        "truncatedBodies": 19,
+        "omittedBodies": 2,
+        "bodyErrors": 1
+      },
+      "limitations": [
+        "Only YES, I AM and marketing PLAY were semantic DOM controls. All in-game buttons required fresh screenshotId plus image-pixel coordinates.",
+        "UMCP reported four parent-page DOM controls while game menus changed: generic body/div wrappers and modal close span, not game controls.",
+        "The iframe canvas was opaque with PixiJS detected only by global signature; sceneAccessible=false and canvas text=[] on game screens.",
+        "Rules text was extractable from frame 1 but output was limited to 1000 characters; Settings exposed its heading but not canvas toggle labels/state.",
+        "Visible text from the underlying marketing page continued to appear while covered by the game modal.",
+        "Async checkwin settlement was labeled with the latest wait action rather than the initiating spin; action marks indicate temporal attribution rather than semantic causality.",
+        "Activity capture retained about 5.43 MB including game asset fetches; with the intentional 262144-byte body cap it reported 19 truncatedBodies, 2 omittedBodies and 1 bodyError. The minimal exported spin window contained two HTTP entries."
+      ],
+      "images": [
+        "controls/elk-x-iter-shop.png",
+        "controls/elk-final-state.png"
+      ]
+    },
+    {
+      "provider": "Belatra",
+      "game": "20 Super Stars",
+      "access": "externally_blocked",
+      "recordSet": "other",
+      "sourceSequences": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "demoSpins": 0,
+      "terminalVisualVerified": false,
+      "outcome": "Cloudflare verification block",
+      "httpEvidence": "Document redirected with 307, then returned 403.",
+      "gameActions": 0
+    },
+    {
+      "provider": "Playson",
+      "game": "25 Cookies Hit the Bonus",
+      "access": "externally_blocked",
+      "recordSet": "other",
+      "sourceSequences": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "demoSpins": 0,
+      "terminalVisualVerified": false,
+      "outcome": "Cloudflare verification block",
+      "httpEvidence": "Document redirected with 307, then returned 403.",
+      "gameActions": 0
+    },
+    {
+      "provider": "Push Gaming",
+      "game": "Diamonds 4 The Win",
+      "access": "externally_blocked",
+      "recordSet": "other",
+      "sourceSequences": [
+        34,
+        35,
+        36,
+        37,
+        38
+      ],
+      "demoSpins": 0,
+      "terminalVisualVerified": false,
+      "outcome": "region block",
+      "httpEvidence": "Public launcher returned 200; game client redirected to a region-unavailable page.",
+      "gameActions": 0
+    }
+  ],
+  "crossCuttingFindings": [
+    "Delivered input is not proof of the requested UI outcome; settings and autoplay dismissal on NGM required separate outcome checks.",
+    "Manual canvas labels can become semantically stale without navigation.",
+    "Action marks provide temporal attribution; background traffic and asynchronous settlement need not carry the initiating spin label.",
+    "Observation stability and needsVision do not establish stopped canvas animation, complete semantics, readiness, or atomic screenshot/text capture.",
+    "Capture losses and externally blocked providers qualify the findings; neither complete capture nor universal game access is claimed."
+  ],
+  "callAccounting": {
+    "totalCalls": 196,
+    "toolErrorCount": 1,
+    "navigationErrorCount": 1,
+    "expectedToolError": {
+      "recordSet": "root",
+      "sequence": 24,
+      "reason": "Deliberate stale-screenshot input was rejected."
+    },
+    "setupNavigationError": {
+      "recordSet": "root",
+      "sequence": 1,
+      "reason": "Certificate-authority navigation error before temporary CA trust setup."
+    },
+    "byRecordSet": {
+      "root": {
+        "calls": 112,
+        "toolErrorCount": 1,
+        "toolErrorSequences": [
+          24
+        ],
+        "navigationErrorCount": 1,
+        "navigationErrorSequences": [
+          1
+        ],
+        "byTool": {
+          "umcp_open": 4,
+          "umcp_observe": 32,
+          "umcp_network": 9,
+          "umcp_act": 34,
+          "umcp_mark_controls": 2,
+          "umcp_screenshot": 16,
+          "umcp_export_har": 3,
+          "umcp_close": 3,
+          "umcp_pages": 1,
+          "umcp_filter_har": 3,
+          "umcp_navigate": 2,
+          "umcp_artifact": 1,
+          "umcp_sessions": 2
+        }
+      },
+      "other": {
+        "calls": 39,
+        "toolErrorCount": 0,
+        "toolErrorSequences": [],
+        "navigationErrorCount": 0,
+        "navigationErrorSequences": [],
+        "byTool": {
+          "umcp_open": 4,
+          "umcp_observe": 12,
+          "umcp_network": 6,
+          "umcp_export_har": 4,
+          "umcp_close": 4,
+          "umcp_act": 7,
+          "umcp_pages": 1,
+          "umcp_sessions": 1
+        }
+      },
+      "elk": {
+        "calls": 45,
+        "toolErrorCount": 0,
+        "toolErrorSequences": [],
+        "navigationErrorCount": 0,
+        "navigationErrorSequences": [],
+        "byTool": {
+          "umcp_open": 1,
+          "umcp_observe": 19,
+          "umcp_act": 17,
+          "umcp_pages": 1,
+          "umcp_network": 4,
+          "umcp_export_har": 1,
+          "umcp_close": 1,
+          "umcp_sessions": 1
+        }
+      }
+    },
+    "definition": "MCP isError flags are counted separately from navigation errors. HTTP provider failures and unsuccessful UI outcomes are documented in their provider sections."
+  },
+  "callLedger": {
+    "root": [
+      {
+        "sequence": 1,
+        "tool": "umcp_open",
+        "durationMs": 307,
+        "isError": false,
+        "navigationErrorPresent": true
+      },
+      {
+        "sequence": 2,
+        "tool": "umcp_open",
+        "durationMs": 441,
+        "isError": false
+      },
+      {
+        "sequence": 3,
+        "tool": "umcp_observe",
+        "durationMs": 169,
+        "isError": false
+      },
+      {
+        "sequence": 4,
+        "tool": "umcp_network",
+        "durationMs": 32,
+        "isError": false
+      },
+      {
+        "sequence": 5,
+        "tool": "umcp_observe",
+        "durationMs": 4088,
+        "isError": false
+      },
+      {
+        "sequence": 6,
+        "tool": "umcp_act",
+        "durationMs": 816,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS intro Play via low screenshot",
+        "coordinateSpace": "image",
+        "x": 708,
+        "y": 217
+      },
+      {
+        "sequence": 7,
+        "tool": "umcp_observe",
+        "durationMs": 763,
+        "isError": false
+      },
+      {
+        "sequence": 8,
+        "tool": "umcp_act",
+        "durationMs": 448,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS rules detected DOM"
+      },
+      {
+        "sequence": 9,
+        "tool": "umcp_observe",
+        "durationMs": 82,
+        "isError": false
+      },
+      {
+        "sequence": 10,
+        "tool": "umcp_observe",
+        "durationMs": 132,
+        "isError": false
+      },
+      {
+        "sequence": 11,
+        "tool": "umcp_act",
+        "durationMs": 260,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS close rules detected DOM"
+      },
+      {
+        "sequence": 12,
+        "tool": "umcp_observe",
+        "durationMs": 7891,
+        "isError": false
+      },
+      {
+        "sequence": 13,
+        "tool": "umcp_mark_controls",
+        "durationMs": 2,
+        "isError": false
+      },
+      {
+        "sequence": 14,
+        "tool": "umcp_observe",
+        "durationMs": 521,
+        "isError": false
+      },
+      {
+        "sequence": 15,
+        "tool": "umcp_act",
+        "durationMs": 327,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS open bet selector manual control"
+      },
+      {
+        "sequence": 16,
+        "tool": "umcp_observe",
+        "durationMs": 527,
+        "isError": false
+      },
+      {
+        "sequence": 17,
+        "tool": "umcp_mark_controls",
+        "durationMs": 2,
+        "isError": false
+      },
+      {
+        "sequence": 18,
+        "tool": "umcp_act",
+        "durationMs": 224,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS decrease demo stake",
+        "coordinateSpace": "viewport",
+        "x": 446,
+        "y": 472
+      },
+      {
+        "sequence": 19,
+        "tool": "umcp_observe",
+        "durationMs": 576,
+        "isError": false
+      },
+      {
+        "sequence": 20,
+        "tool": "umcp_act",
+        "durationMs": 207,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS confirm demo stake 4",
+        "coordinateSpace": "image",
+        "x": 708,
+        "y": 217
+      },
+      {
+        "sequence": 21,
+        "tool": "umcp_observe",
+        "durationMs": 480,
+        "isError": false
+      },
+      {
+        "sequence": 22,
+        "tool": "umcp_act",
+        "durationMs": 210,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS open feature purchase menu",
+        "coordinateSpace": "image",
+        "x": 679,
+        "y": 294
+      },
+      {
+        "sequence": 23,
+        "tool": "umcp_observe",
+        "durationMs": 502,
+        "isError": false
+      },
+      {
+        "sequence": 24,
+        "tool": "umcp_act",
+        "durationMs": 3,
+        "isError": true,
+        "kind": "click",
+        "label": "Expected stale screenshot rejection",
+        "coordinateSpace": "image",
+        "x": 518,
+        "y": 34
+      },
+      {
+        "sequence": 25,
+        "tool": "umcp_act",
+        "durationMs": 218,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS feature option 2 of 4",
+        "coordinateSpace": "image",
+        "x": 448,
+        "y": 239
+      },
+      {
+        "sequence": 26,
+        "tool": "umcp_screenshot",
+        "durationMs": 420,
+        "isError": false
+      },
+      {
+        "sequence": 27,
+        "tool": "umcp_act",
+        "durationMs": 225,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS feature option 3 of 4",
+        "coordinateSpace": "image",
+        "x": 448,
+        "y": 239
+      },
+      {
+        "sequence": 28,
+        "tool": "umcp_screenshot",
+        "durationMs": 421,
+        "isError": false
+      },
+      {
+        "sequence": 29,
+        "tool": "umcp_act",
+        "durationMs": 214,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS feature option 4 of 4",
+        "coordinateSpace": "image",
+        "x": 448,
+        "y": 239
+      },
+      {
+        "sequence": 30,
+        "tool": "umcp_screenshot",
+        "durationMs": 426,
+        "isError": false
+      },
+      {
+        "sequence": 31,
+        "tool": "umcp_act",
+        "durationMs": 228,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS close feature menu without purchase",
+        "coordinateSpace": "image",
+        "x": 518,
+        "y": 34
+      },
+      {
+        "sequence": 32,
+        "tool": "umcp_observe",
+        "durationMs": 443,
+        "isError": false
+      },
+      {
+        "sequence": 33,
+        "tool": "umcp_act",
+        "durationMs": 236,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS mute detected sound control"
+      },
+      {
+        "sequence": 34,
+        "tool": "umcp_screenshot",
+        "durationMs": 406,
+        "isError": false
+      },
+      {
+        "sequence": 35,
+        "tool": "umcp_act",
+        "durationMs": 5024,
+        "isError": false,
+        "kind": "click",
+        "label": "GPAS single demo spin stake 4",
+        "coordinateSpace": "image",
+        "x": 708,
+        "y": 217
+      },
+      {
+        "sequence": 36,
+        "tool": "umcp_observe",
+        "durationMs": 469,
+        "isError": false
+      },
+      {
+        "sequence": 37,
+        "tool": "umcp_network",
+        "durationMs": 50,
+        "isError": false
+      },
+      {
+        "sequence": 38,
+        "tool": "umcp_network",
+        "durationMs": 34,
+        "isError": false
+      },
+      {
+        "sequence": 39,
+        "tool": "umcp_network",
+        "durationMs": 19,
+        "isError": false
+      },
+      {
+        "sequence": 40,
+        "tool": "umcp_export_har",
+        "durationMs": 68,
+        "isError": false
+      },
+      {
+        "sequence": 41,
+        "tool": "umcp_close",
+        "durationMs": 145,
+        "isError": false
+      },
+      {
+        "sequence": 42,
+        "tool": "umcp_open",
+        "durationMs": 494,
+        "isError": false
+      },
+      {
+        "sequence": 43,
+        "tool": "umcp_observe",
+        "durationMs": 1122,
+        "isError": false
+      },
+      {
+        "sequence": 44,
+        "tool": "umcp_act",
+        "durationMs": 516,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM intro Continue",
+        "coordinateSpace": "image",
+        "x": 384,
+        "y": 355
+      },
+      {
+        "sequence": 45,
+        "tool": "umcp_observe",
+        "durationMs": 770,
+        "isError": false
+      },
+      {
+        "sequence": 46,
+        "tool": "umcp_act",
+        "durationMs": 576,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM open detected settings"
+      },
+      {
+        "sequence": 47,
+        "tool": "umcp_observe",
+        "durationMs": 866,
+        "isError": false
+      },
+      {
+        "sequence": 48,
+        "tool": "umcp_pages",
+        "durationMs": 36,
+        "isError": false
+      },
+      {
+        "sequence": 49,
+        "tool": "umcp_act",
+        "durationMs": 225,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM open canvas info paytable",
+        "coordinateSpace": "image",
+        "x": 160,
+        "y": 361
+      },
+      {
+        "sequence": 50,
+        "tool": "umcp_observe",
+        "durationMs": 1378,
+        "isError": false
+      },
+      {
+        "sequence": 51,
+        "tool": "umcp_screenshot",
+        "durationMs": 304,
+        "isError": false
+      },
+      {
+        "sequence": 52,
+        "tool": "umcp_act",
+        "durationMs": 222,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM next paytable page from clipped image",
+        "coordinateSpace": "image",
+        "x": 775,
+        "y": 210
+      },
+      {
+        "sequence": 53,
+        "tool": "umcp_screenshot",
+        "durationMs": 290,
+        "isError": false
+      },
+      {
+        "sequence": 54,
+        "tool": "umcp_act",
+        "durationMs": 206,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM close paytable from clipped image",
+        "coordinateSpace": "image",
+        "x": 750,
+        "y": 26
+      },
+      {
+        "sequence": 55,
+        "tool": "umcp_observe",
+        "durationMs": 689,
+        "isError": false
+      },
+      {
+        "sequence": 56,
+        "tool": "umcp_act",
+        "durationMs": 207,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM decrease active lines from 25",
+        "coordinateSpace": "image",
+        "x": 270,
+        "y": 371
+      },
+      {
+        "sequence": 57,
+        "tool": "umcp_screenshot",
+        "durationMs": 379,
+        "isError": false
+      },
+      {
+        "sequence": 58,
+        "tool": "umcp_act",
+        "durationMs": 220,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM open autoplay options without starting",
+        "coordinateSpace": "image",
+        "x": 503,
+        "y": 351
+      },
+      {
+        "sequence": 59,
+        "tool": "umcp_observe",
+        "durationMs": 818,
+        "isError": false
+      },
+      {
+        "sequence": 60,
+        "tool": "umcp_act",
+        "durationMs": 167,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM close autoplay options without starting",
+        "coordinateSpace": "image",
+        "x": 835,
+        "y": 585
+      },
+      {
+        "sequence": 61,
+        "tool": "umcp_screenshot",
+        "durationMs": 360,
+        "isError": false
+      },
+      {
+        "sequence": 62,
+        "tool": "umcp_act",
+        "durationMs": 209,
+        "isError": false,
+        "kind": "hover",
+        "label": "NGM dismiss hover autoplay menu",
+        "coordinateSpace": "image",
+        "x": 384,
+        "y": 100
+      },
+      {
+        "sequence": 63,
+        "tool": "umcp_screenshot",
+        "durationMs": 406,
+        "isError": false
+      },
+      {
+        "sequence": 64,
+        "tool": "umcp_act",
+        "durationMs": 5039,
+        "isError": false,
+        "kind": "click",
+        "label": "NGM single demo spin stake 2.40 lines 24",
+        "coordinateSpace": "image",
+        "x": 592,
+        "y": 361
+      },
+      {
+        "sequence": 65,
+        "tool": "umcp_observe",
+        "durationMs": 843,
+        "isError": false
+      },
+      {
+        "sequence": 66,
+        "tool": "umcp_network",
+        "durationMs": 27,
+        "isError": false
+      },
+      {
+        "sequence": 67,
+        "tool": "umcp_network",
+        "durationMs": 26,
+        "isError": false
+      },
+      {
+        "sequence": 68,
+        "tool": "umcp_screenshot",
+        "durationMs": 422,
+        "isError": false
+      },
+      {
+        "sequence": 69,
+        "tool": "umcp_export_har",
+        "durationMs": 5034,
+        "isError": false
+      },
+      {
+        "sequence": 70,
+        "tool": "umcp_close",
+        "durationMs": 10079,
+        "isError": false
+      },
+      {
+        "sequence": 71,
+        "tool": "umcp_filter_har",
+        "durationMs": 20,
+        "isError": false
+      },
+      {
+        "sequence": 72,
+        "tool": "umcp_open",
+        "durationMs": 323,
+        "isError": false
+      },
+      {
+        "sequence": 73,
+        "tool": "umcp_observe",
+        "durationMs": 66,
+        "isError": false
+      },
+      {
+        "sequence": 74,
+        "tool": "umcp_network",
+        "durationMs": 5,
+        "isError": false
+      },
+      {
+        "sequence": 75,
+        "tool": "umcp_navigate",
+        "durationMs": 48,
+        "isError": false
+      },
+      {
+        "sequence": 76,
+        "tool": "umcp_observe",
+        "durationMs": 122,
+        "isError": false
+      },
+      {
+        "sequence": 77,
+        "tool": "umcp_navigate",
+        "durationMs": 1142,
+        "isError": false
+      },
+      {
+        "sequence": 78,
+        "tool": "umcp_observe",
+        "durationMs": 136,
+        "isError": false
+      },
+      {
+        "sequence": 79,
+        "tool": "umcp_observe",
+        "durationMs": 3411,
+        "isError": false
+      },
+      {
+        "sequence": 80,
+        "tool": "umcp_act",
+        "durationMs": 1086,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay intro continue normalized coordinates",
+        "coordinateSpace": "normalized",
+        "x": 0.5,
+        "y": 0.94
+      },
+      {
+        "sequence": 81,
+        "tool": "umcp_observe",
+        "durationMs": 3948,
+        "isError": false
+      },
+      {
+        "sequence": 82,
+        "tool": "umcp_act",
+        "durationMs": 2005,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay dismiss observed hardware acceleration warning"
+      },
+      {
+        "sequence": 83,
+        "tool": "umcp_observe",
+        "durationMs": 3461,
+        "isError": false
+      },
+      {
+        "sequence": 84,
+        "tool": "umcp_act",
+        "durationMs": 299,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay open visual menu",
+        "coordinateSpace": "image",
+        "x": 101,
+        "y": 487
+      },
+      {
+        "sequence": 85,
+        "tool": "umcp_observe",
+        "durationMs": 2073,
+        "isError": false
+      },
+      {
+        "sequence": 86,
+        "tool": "umcp_observe",
+        "durationMs": 6231,
+        "isError": false
+      },
+      {
+        "sequence": 87,
+        "tool": "umcp_act",
+        "durationMs": 723,
+        "isError": false,
+        "kind": "scroll",
+        "label": "RubyPlay scroll paytable content",
+        "coordinateSpace": "image",
+        "x": 480,
+        "y": 260,
+        "deltaY": 515
+      },
+      {
+        "sequence": 88,
+        "tool": "umcp_screenshot",
+        "durationMs": 897,
+        "isError": false
+      },
+      {
+        "sequence": 89,
+        "tool": "umcp_act",
+        "durationMs": 376,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay switch to help rules tab",
+        "coordinateSpace": "image",
+        "x": 550,
+        "y": 499
+      },
+      {
+        "sequence": 90,
+        "tool": "umcp_observe",
+        "durationMs": 1902,
+        "isError": false
+      },
+      {
+        "sequence": 91,
+        "tool": "umcp_artifact",
+        "durationMs": 8,
+        "isError": false
+      },
+      {
+        "sequence": 92,
+        "tool": "umcp_observe",
+        "durationMs": 2087,
+        "isError": false
+      },
+      {
+        "sequence": 93,
+        "tool": "umcp_act",
+        "durationMs": 269,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay close rules menu",
+        "coordinateSpace": "image",
+        "x": 691,
+        "y": 499
+      },
+      {
+        "sequence": 94,
+        "tool": "umcp_screenshot",
+        "durationMs": 1116,
+        "isError": false
+      },
+      {
+        "sequence": 95,
+        "tool": "umcp_act",
+        "durationMs": 285,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay decrease demo bet",
+        "coordinateSpace": "image",
+        "x": 733,
+        "y": 486
+      },
+      {
+        "sequence": 96,
+        "tool": "umcp_screenshot",
+        "durationMs": 1304,
+        "isError": false
+      },
+      {
+        "sequence": 97,
+        "tool": "umcp_act",
+        "durationMs": 291,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay open feature shop without purchase",
+        "coordinateSpace": "image",
+        "x": 92,
+        "y": 371
+      },
+      {
+        "sequence": 98,
+        "tool": "umcp_observe",
+        "durationMs": 2965,
+        "isError": false
+      },
+      {
+        "sequence": 99,
+        "tool": "umcp_act",
+        "durationMs": 236,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay close feature shop without purchase",
+        "coordinateSpace": "image",
+        "x": 686,
+        "y": 96
+      },
+      {
+        "sequence": 100,
+        "tool": "umcp_screenshot",
+        "durationMs": 1502,
+        "isError": false
+      },
+      {
+        "sequence": 101,
+        "tool": "umcp_screenshot",
+        "durationMs": 1317,
+        "isError": false
+      },
+      {
+        "sequence": 102,
+        "tool": "umcp_act",
+        "durationMs": 5077,
+        "isError": false,
+        "kind": "click",
+        "label": "RubyPlay single normal demo spin stake 0.50",
+        "coordinateSpace": "image",
+        "x": 865,
+        "y": 301
+      },
+      {
+        "sequence": 103,
+        "tool": "umcp_observe",
+        "durationMs": 2809,
+        "isError": false
+      },
+      {
+        "sequence": 104,
+        "tool": "umcp_network",
+        "durationMs": 118,
+        "isError": false
+      },
+      {
+        "sequence": 105,
+        "tool": "umcp_network",
+        "durationMs": 3,
+        "isError": false
+      },
+      {
+        "sequence": 106,
+        "tool": "umcp_screenshot",
+        "durationMs": 1351,
+        "isError": false
+      },
+      {
+        "sequence": 107,
+        "tool": "umcp_export_har",
+        "durationMs": 131,
+        "isError": false
+      },
+      {
+        "sequence": 108,
+        "tool": "umcp_close",
+        "durationMs": 235,
+        "isError": false
+      },
+      {
+        "sequence": 109,
+        "tool": "umcp_sessions",
+        "durationMs": 1,
+        "isError": false
+      },
+      {
+        "sequence": 110,
+        "tool": "umcp_filter_har",
+        "durationMs": 23,
+        "isError": false
+      },
+      {
+        "sequence": 111,
+        "tool": "umcp_filter_har",
+        "durationMs": 4,
+        "isError": false
+      },
+      {
+        "sequence": 112,
+        "tool": "umcp_sessions",
+        "durationMs": 2,
+        "isError": false
+      }
+    ],
+    "other": [
+      {
+        "sequence": 1,
+        "tool": "umcp_open",
+        "durationMs": 469,
+        "isError": false
+      },
+      {
+        "sequence": 2,
+        "tool": "umcp_observe",
+        "durationMs": 167,
+        "isError": false
+      },
+      {
+        "sequence": 3,
+        "tool": "umcp_network",
+        "durationMs": 10,
+        "isError": false
+      },
+      {
+        "sequence": 4,
+        "tool": "umcp_export_har",
+        "durationMs": 5014,
+        "isError": false
+      },
+      {
+        "sequence": 5,
+        "tool": "umcp_close",
+        "durationMs": 10111,
+        "isError": false
+      },
+      {
+        "sequence": 6,
+        "tool": "umcp_open",
+        "durationMs": 495,
+        "isError": false
+      },
+      {
+        "sequence": 7,
+        "tool": "umcp_observe",
+        "durationMs": 133,
+        "isError": false
+      },
+      {
+        "sequence": 8,
+        "tool": "umcp_network",
+        "durationMs": 4,
+        "isError": false
+      },
+      {
+        "sequence": 9,
+        "tool": "umcp_export_har",
+        "durationMs": 5013,
+        "isError": false
+      },
+      {
+        "sequence": 10,
+        "tool": "umcp_close",
+        "durationMs": 10073,
+        "isError": false
+      },
+      {
+        "sequence": 11,
+        "tool": "umcp_open",
+        "durationMs": 1125,
+        "isError": false
+      },
+      {
+        "sequence": 12,
+        "tool": "umcp_observe",
+        "durationMs": 201,
+        "isError": false
+      },
+      {
+        "sequence": 13,
+        "tool": "umcp_network",
+        "durationMs": 12,
+        "isError": false
+      },
+      {
+        "sequence": 14,
+        "tool": "umcp_act",
+        "durationMs": 5009,
+        "isError": false,
+        "kind": "wait"
+      },
+      {
+        "sequence": 15,
+        "tool": "umcp_observe",
+        "durationMs": 4190,
+        "isError": false
+      },
+      {
+        "sequence": 16,
+        "tool": "umcp_act",
+        "durationMs": 2667,
+        "isError": false,
+        "kind": "click"
+      },
+      {
+        "sequence": 17,
+        "tool": "umcp_observe",
+        "durationMs": 3987,
+        "isError": false
+      },
+      {
+        "sequence": 18,
+        "tool": "umcp_act",
+        "durationMs": 3048,
+        "isError": false,
+        "kind": "click"
+      },
+      {
+        "sequence": 19,
+        "tool": "umcp_observe",
+        "durationMs": 4137,
+        "isError": false
+      },
+      {
+        "sequence": 20,
+        "tool": "umcp_pages",
+        "durationMs": 154,
+        "isError": false
+      },
+      {
+        "sequence": 21,
+        "tool": "umcp_observe",
+        "durationMs": 6086,
+        "isError": false
+      },
+      {
+        "sequence": 22,
+        "tool": "umcp_act",
+        "durationMs": 4146,
+        "isError": false,
+        "kind": "click"
+      },
+      {
+        "sequence": 23,
+        "tool": "umcp_observe",
+        "durationMs": 2195,
+        "isError": false
+      },
+      {
+        "sequence": 24,
+        "tool": "umcp_act",
+        "durationMs": 2798,
+        "isError": false,
+        "kind": "click"
+      },
+      {
+        "sequence": 25,
+        "tool": "umcp_observe",
+        "durationMs": 3693,
+        "isError": false
+      },
+      {
+        "sequence": 26,
+        "tool": "umcp_act",
+        "durationMs": 2838,
+        "isError": false,
+        "kind": "click"
+      },
+      {
+        "sequence": 27,
+        "tool": "umcp_observe",
+        "durationMs": 4188,
+        "isError": false
+      },
+      {
+        "sequence": 28,
+        "tool": "umcp_network",
+        "durationMs": 1,
+        "isError": false,
+        "label": "single-demo-spin-0.20"
+      },
+      {
+        "sequence": 29,
+        "tool": "umcp_act",
+        "durationMs": 5296,
+        "isError": false,
+        "kind": "click",
+        "label": "single-demo-spin-0.20",
+        "coordinateSpace": "image",
+        "x": 640,
+        "y": 671
+      },
+      {
+        "sequence": 30,
+        "tool": "umcp_observe",
+        "durationMs": 4570,
+        "isError": false
+      },
+      {
+        "sequence": 31,
+        "tool": "umcp_network",
+        "durationMs": 97,
+        "isError": false
+      },
+      {
+        "sequence": 32,
+        "tool": "umcp_export_har",
+        "durationMs": 94,
+        "isError": false
+      },
+      {
+        "sequence": 33,
+        "tool": "umcp_close",
+        "durationMs": 241,
+        "isError": false
+      },
+      {
+        "sequence": 34,
+        "tool": "umcp_open",
+        "durationMs": 1332,
+        "isError": false
+      },
+      {
+        "sequence": 35,
+        "tool": "umcp_observe",
+        "durationMs": 375,
+        "isError": false
+      },
+      {
+        "sequence": 36,
+        "tool": "umcp_network",
+        "durationMs": 4,
+        "isError": false
+      },
+      {
+        "sequence": 37,
+        "tool": "umcp_export_har",
+        "durationMs": 11,
+        "isError": false
+      },
+      {
+        "sequence": 38,
+        "tool": "umcp_close",
+        "durationMs": 111,
+        "isError": false
+      },
+      {
+        "sequence": 39,
+        "tool": "umcp_sessions",
+        "durationMs": 1,
+        "isError": false
+      }
+    ],
+    "elk": [
+      {
+        "sequence": 1,
+        "tool": "umcp_open",
+        "durationMs": 1486,
+        "isError": false
+      },
+      {
+        "sequence": 2,
+        "tool": "umcp_observe",
+        "durationMs": 369,
+        "isError": false
+      },
+      {
+        "sequence": 3,
+        "tool": "umcp_act",
+        "durationMs": 374,
+        "isError": false,
+        "kind": "click"
+      },
+      {
+        "sequence": 4,
+        "tool": "umcp_observe",
+        "durationMs": 358,
+        "isError": false
+      },
+      {
+        "sequence": 5,
+        "tool": "umcp_act",
+        "durationMs": 5025,
+        "isError": false,
+        "kind": "click"
+      },
+      {
+        "sequence": 6,
+        "tool": "umcp_observe",
+        "durationMs": 196,
+        "isError": false
+      },
+      {
+        "sequence": 7,
+        "tool": "umcp_pages",
+        "durationMs": 3,
+        "isError": false
+      },
+      {
+        "sequence": 8,
+        "tool": "umcp_act",
+        "durationMs": 10009,
+        "isError": false,
+        "kind": "wait"
+      },
+      {
+        "sequence": 9,
+        "tool": "umcp_observe",
+        "durationMs": 134,
+        "isError": false
+      },
+      {
+        "sequence": 10,
+        "tool": "umcp_act",
+        "durationMs": 5055,
+        "isError": false,
+        "kind": "click",
+        "label": "start-demo-loader",
+        "coordinateSpace": "image",
+        "x": 640,
+        "y": 301
+      },
+      {
+        "sequence": 11,
+        "tool": "umcp_observe",
+        "durationMs": 525,
+        "isError": false
+      },
+      {
+        "sequence": 12,
+        "tool": "umcp_act",
+        "durationMs": 10005,
+        "isError": false,
+        "kind": "wait"
+      },
+      {
+        "sequence": 13,
+        "tool": "umcp_observe",
+        "durationMs": 465,
+        "isError": false
+      },
+      {
+        "sequence": 14,
+        "tool": "umcp_act",
+        "durationMs": 435,
+        "isError": false,
+        "kind": "click",
+        "label": "open-game-menu",
+        "coordinateSpace": "image",
+        "x": 139,
+        "y": 138
+      },
+      {
+        "sequence": 15,
+        "tool": "umcp_observe",
+        "durationMs": 403,
+        "isError": false
+      },
+      {
+        "sequence": 16,
+        "tool": "umcp_act",
+        "durationMs": 385,
+        "isError": false,
+        "kind": "click",
+        "label": "open-rules",
+        "coordinateSpace": "image",
+        "x": 736,
+        "y": 573
+      },
+      {
+        "sequence": 17,
+        "tool": "umcp_observe",
+        "durationMs": 661,
+        "isError": false
+      },
+      {
+        "sequence": 18,
+        "tool": "umcp_act",
+        "durationMs": 367,
+        "isError": false,
+        "kind": "click",
+        "label": "open-settings",
+        "coordinateSpace": "image",
+        "x": 544,
+        "y": 573
+      },
+      {
+        "sequence": 19,
+        "tool": "umcp_observe",
+        "durationMs": 664,
+        "isError": false
+      },
+      {
+        "sequence": 20,
+        "tool": "umcp_act",
+        "durationMs": 371,
+        "isError": false,
+        "kind": "click",
+        "label": "music-off",
+        "coordinateSpace": "image",
+        "x": 567,
+        "y": 440
+      },
+      {
+        "sequence": 21,
+        "tool": "umcp_observe",
+        "durationMs": 685,
+        "isError": false
+      },
+      {
+        "sequence": 22,
+        "tool": "umcp_act",
+        "durationMs": 372,
+        "isError": false,
+        "kind": "click",
+        "label": "close-menu",
+        "coordinateSpace": "image",
+        "x": 1151,
+        "y": 125
+      },
+      {
+        "sequence": 23,
+        "tool": "umcp_observe",
+        "durationMs": 899,
+        "isError": false
+      },
+      {
+        "sequence": 24,
+        "tool": "umcp_act",
+        "durationMs": 385,
+        "isError": false,
+        "kind": "click",
+        "label": "open-bet-selector",
+        "coordinateSpace": "image",
+        "x": 140,
+        "y": 567
+      },
+      {
+        "sequence": 25,
+        "tool": "umcp_observe",
+        "durationMs": 815,
+        "isError": false
+      },
+      {
+        "sequence": 26,
+        "tool": "umcp_act",
+        "durationMs": 385,
+        "isError": false,
+        "kind": "click",
+        "label": "set-demo-bet-0.20",
+        "coordinateSpace": "image",
+        "x": 480,
+        "y": 201
+      },
+      {
+        "sequence": 27,
+        "tool": "umcp_observe",
+        "durationMs": 709,
+        "isError": false
+      },
+      {
+        "sequence": 28,
+        "tool": "umcp_act",
+        "durationMs": 425,
+        "isError": false,
+        "kind": "click",
+        "label": "close-bet-selector",
+        "coordinateSpace": "image",
+        "x": 1151,
+        "y": 125
+      },
+      {
+        "sequence": 29,
+        "tool": "umcp_observe",
+        "durationMs": 908,
+        "isError": false
+      },
+      {
+        "sequence": 30,
+        "tool": "umcp_act",
+        "durationMs": 399,
+        "isError": false,
+        "kind": "click",
+        "label": "open-x-iter-shop",
+        "coordinateSpace": "image",
+        "x": 126,
+        "y": 435
+      },
+      {
+        "sequence": 31,
+        "tool": "umcp_observe",
+        "durationMs": 1082,
+        "isError": false
+      },
+      {
+        "sequence": 32,
+        "tool": "umcp_act",
+        "durationMs": 365,
+        "isError": false,
+        "kind": "click",
+        "label": "close-x-iter-without-purchase",
+        "coordinateSpace": "image",
+        "x": 184,
+        "y": 429
+      },
+      {
+        "sequence": 33,
+        "tool": "umcp_observe",
+        "durationMs": 897,
+        "isError": false
+      },
+      {
+        "sequence": 34,
+        "tool": "umcp_network",
+        "durationMs": 7,
+        "isError": false,
+        "label": "single-normal-demo-spin-0.20"
+      },
+      {
+        "sequence": 35,
+        "tool": "umcp_act",
+        "durationMs": 5019,
+        "isError": false,
+        "kind": "click",
+        "label": "single-normal-demo-spin-0.20",
+        "coordinateSpace": "image",
+        "x": 1091,
+        "y": 529
+      },
+      {
+        "sequence": 36,
+        "tool": "umcp_observe",
+        "durationMs": 996,
+        "isError": false
+      },
+      {
+        "sequence": 37,
+        "tool": "umcp_network",
+        "durationMs": 30,
+        "isError": false
+      },
+      {
+        "sequence": 38,
+        "tool": "umcp_network",
+        "durationMs": 16,
+        "isError": false
+      },
+      {
+        "sequence": 39,
+        "tool": "umcp_act",
+        "durationMs": 3001,
+        "isError": false,
+        "kind": "wait"
+      },
+      {
+        "sequence": 40,
+        "tool": "umcp_observe",
+        "durationMs": 847,
+        "isError": false
+      },
+      {
+        "sequence": 41,
+        "tool": "umcp_observe",
+        "durationMs": 1070,
+        "isError": false
+      },
+      {
+        "sequence": 42,
+        "tool": "umcp_network",
+        "durationMs": 66,
+        "isError": false
+      },
+      {
+        "sequence": 43,
+        "tool": "umcp_export_har",
+        "durationMs": 87,
+        "isError": false
+      },
+      {
+        "sequence": 44,
+        "tool": "umcp_close",
+        "durationMs": 198,
+        "isError": false
+      },
+      {
+        "sequence": 45,
+        "tool": "umcp_sessions",
+        "durationMs": 1,
+        "isError": false
+      }
+    ]
+  },
+  "publicEvidencePolicy": "Includes selected protocol values, source record numbers, tool metadata and relative screenshot references. Source URLs, cookies, headers, tokens, raw payloads, dynamic session/player/action identifiers and private filesystem paths are excluded."
+}
