@@ -2,6 +2,8 @@
 
 Servidor MCP **local**, por **stdio**, para que un LLM controle Chromium, detecte controles y analice HTTP/WebSocket. No requiere una API de IA: el modelo que conecta al MCP interpreta las imágenes y decide las acciones.
 
+**Validación del 26/10/2026:** el núcleo pasó **54/54 pruebas** en [GitHub Actions](https://github.com/Shisetsu-Code/UMCP/actions/runs/40374185931). Las demos reales aportaron tres introducciones visibles, una pantalla de carga con inicialización y cuatro bloqueos externos. La aprobación de todos los juegos y sus acciones sigue pendiente. [Resultados, límites y capturas](docs/validation.md).
+
 ## Instalación
 
 Requisitos: **Node.js 22 o superior** (CI usa 24), npm y Chromium de Playwright. Python 3 sólo se necesita para el analizador offline de HAR y sus pruebas.

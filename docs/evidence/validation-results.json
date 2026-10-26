@@ -1,0 +1,1146 @@
+{
+  "date": "2026-10-26",
+  "testedCommit": "4044ac0f3e241371ce18388431bf37a362ecb79c",
+  "workflowRunId": 40374185931,
+  "workflowUrl": "https://github.com/Shisetsu-Code/UMCP/actions/runs/40374185931",
+  "core": {
+    "tests": 54,
+    "passed": 54,
+    "failed": 0,
+    "skipped": 0,
+    "localDurationMs": 9526.122604,
+    "ciDurationMs": 7158.324179
+  },
+  "liveScope": "Public demo navigation, initialization, UI observation and network capture. No spin, purchase, every-button or universal engine-coverage claim.",
+  "reports": [
+    {
+      "target": "belatra",
+      "family": "Belatra",
+      "game": "20 Super Stars",
+      "publicLaunchUrl": "https://demo.bltrm.com/belatra/demo",
+      "startedAt": "2026-10-26T18:03:37.174Z",
+      "status": "external-block",
+      "steps": [],
+      "measurements": {
+        "openMs": 445,
+        "lowScreenshotMs": 59,
+        "highScreenshotMs": 63,
+        "exportMs": 5008,
+        "totalMs": 27971
+      },
+      "limitations": [
+        "Public site returned an access/challenge/region block. No challenge bypass attempted.",
+        "Navigation/observation/network smoke only: no spin, purchase or all-feature coverage claimed."
+      ],
+      "navigationError": null,
+      "observation": {
+        "controls": 2,
+        "bySource": {
+          "dom": 2,
+          "engine": 0,
+          "manual": 0
+        },
+        "canvases": 0,
+        "engines": [],
+        "needsVision": false,
+        "stable": true,
+        "frames": 2,
+        "warnings": []
+      },
+      "expectedEndpointRequested": false,
+      "endpointEvidence": [],
+      "expectedEndpointObserved": false,
+      "images": {
+        "low": {
+          "name": "image_3e4db691-469a-41ce-aa4c-cf595953fd5a.jpeg",
+          "width": 768,
+          "height": 432,
+          "bytes": 6301
+        },
+        "high": {
+          "name": "image_43a65343-cea5-4049-a47f-386867845a81.png",
+          "width": 1280,
+          "height": 720,
+          "bytes": 27280
+        },
+        "byteReductionPercent": 76.9
+      },
+      "network": {
+        "stats": {
+          "storedEntries": 18,
+          "httpEntries": 18,
+          "webSocketEntries": 0,
+          "frames": 0,
+          "retainedBodyBytes": 588850,
+          "pending": 2,
+          "inflight": 2,
+          "flushTimeouts": 1,
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 1,
+          "omittedBodies": 0,
+          "bodyErrors": 0,
+          "limits": {
+            "maxEntries": 5000,
+            "maxBodyBytes": 262144,
+            "maxWebSocketFrames": 10000,
+            "maxTotalBodyBytes": 67108864
+          },
+          "captureBodies": "activity"
+        },
+        "activityEntries": 5,
+        "activityHar": "network_c5794c24-7092-41ca-99ca-bf65502be4ce.har",
+        "metadataHar": "network_b268daee-4ccc-40a4-a376-57f7da54b8c9.har",
+        "webSocketFrames": 0
+      },
+      "finalUrl": "https://demo.bltrm.com/belatra/demo",
+      "manualReview": {
+        "screen": "external-block",
+        "gameplayVerified": false,
+        "allControlsVerified": false
+      }
+    },
+    {
+      "target": "playtech-gpas",
+      "family": "Playtech GPAS",
+      "game": "CollectOrbs Wild West Wilds",
+      "publicLaunchUrl": "https://gpas-games.playtechone.com/gpasclient.html",
+      "startedAt": "2026-10-26T18:04:05.551Z",
+      "status": "game-observed",
+      "steps": [],
+      "measurements": {
+        "openMs": 298,
+        "observeMs": 15470,
+        "lowScreenshotMs": 532,
+        "highScreenshotMs": 561,
+        "exportMs": 50,
+        "totalMs": 25134
+      },
+      "limitations": [
+        "Slow observation: final snapshot uses one sample and makes no temporal stability claim.",
+        "Canvas semantics require model vision where no accessible scene graph exists. This smoke does not validate all game buttons.",
+        "Navigation/observation/network smoke only: no spin, purchase or all-feature coverage claimed."
+      ],
+      "navigationError": null,
+      "progress": [
+        {
+          "round": 0,
+          "elapsedMs": 404,
+          "observeMs": 12,
+          "controls": 0,
+          "canvases": 0,
+          "warnings": []
+        },
+        {
+          "round": 1,
+          "elapsedMs": 2676,
+          "observeMs": 122,
+          "controls": 1,
+          "canvases": 0,
+          "warnings": []
+        },
+        {
+          "round": 2,
+          "elapsedMs": 5037,
+          "observeMs": 301,
+          "controls": 3,
+          "canvases": 1,
+          "warnings": [
+            "Frame 0: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+          ]
+        },
+        {
+          "round": 3,
+          "elapsedMs": 23546,
+          "observeMs": 15470,
+          "controls": 3,
+          "canvases": 1,
+          "warnings": [
+            "Frame 0: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+          ]
+        }
+      ],
+      "expectedEndpointRequested": true,
+      "endpointEvidence": [
+        {
+          "id": "net-20",
+          "url": "https://gpas-stg.playtechone.com/socket.io/1/",
+          "method": "GET",
+          "status": 200,
+          "resourceType": "xhr",
+          "transport": "http",
+          "startedDateTime": "2026-10-26T18:04:06.041Z",
+          "time": 494.382,
+          "bytes": 411,
+          "frames": 0,
+          "state": "finished",
+          "action": {
+            "id": "action-1793037845959-19",
+            "label": "wait",
+            "timestamp": 1793037845959
+          }
+        },
+        {
+          "id": "net-32",
+          "url": "wss://gpas-stg.playtechone.com/socket.io/1/websocket/{connectionId}",
+          "method": "GET",
+          "status": 0,
+          "resourceType": "websocket",
+          "transport": "ws",
+          "startedDateTime": "2026-10-26T18:04:06.769Z",
+          "time": 0,
+          "bytes": 0,
+          "frames": 13,
+          "state": "open",
+          "action": {
+            "id": "action-1793037845959-19",
+            "label": "wait",
+            "timestamp": 1793037845959
+          }
+        }
+      ],
+      "expectedEndpointObserved": true,
+      "observation": {
+        "controls": 3,
+        "bySource": {
+          "dom": 3,
+          "engine": 0,
+          "manual": 0
+        },
+        "canvases": 1,
+        "engines": [],
+        "needsVision": true,
+        "stable": null,
+        "frames": 1,
+        "warnings": [
+          "Frame 0: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+        ]
+      },
+      "images": {
+        "low": {
+          "name": "image_0dc74bab-98e6-407b-b4b3-7f3496e0d8b0.jpeg",
+          "width": 768,
+          "height": 432,
+          "bytes": 32055
+        },
+        "high": {
+          "name": "image_76f8fbe2-346b-486d-8759-c6b577cf2af5.png",
+          "width": 1280,
+          "height": 720,
+          "bytes": 1725013
+        },
+        "byteReductionPercent": 98.1
+      },
+      "network": {
+        "stats": {
+          "storedEntries": 166,
+          "httpEntries": 165,
+          "webSocketEntries": 1,
+          "frames": 13,
+          "retainedBodyBytes": 4225027,
+          "pending": 0,
+          "inflight": 0,
+          "flushTimeouts": 0,
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 6,
+          "omittedBodies": 0,
+          "bodyErrors": 0,
+          "limits": {
+            "maxEntries": 5000,
+            "maxBodyBytes": 262144,
+            "maxWebSocketFrames": 10000,
+            "maxTotalBodyBytes": 67108864
+          },
+          "captureBodies": "activity"
+        },
+        "activityEntries": 68,
+        "activityHar": "network_ee3efb75-0c9a-4434-b20b-8550f339812d.har",
+        "metadataHar": "network_f81b011b-f4ac-425c-909d-fdbe9ab437ca.har",
+        "webSocketFrames": 13
+      },
+      "finalUrl": "https://gpas-games.playtechone.com/gpasclient.html",
+      "manualReview": {
+        "screen": "intro",
+        "gameplayVerified": false,
+        "allControlsVerified": false,
+        "screenshot": "docs/evidence/playtech-gpas.jpeg"
+      }
+    },
+    {
+      "target": "playtech-ngm",
+      "family": "Playtech NGM",
+      "game": "Frankie Dettori Sporting Legends",
+      "publicLaunchUrl": "https://cachedownload.playtechone.com/ngmdesktop/casinoclient.html",
+      "startedAt": "2026-10-26T18:04:31.091Z",
+      "status": "game-observed",
+      "steps": [],
+      "measurements": {
+        "openMs": 282,
+        "observeMs": 872,
+        "lowScreenshotMs": 722,
+        "highScreenshotMs": 770,
+        "exportMs": 32,
+        "totalMs": 14927
+      },
+      "limitations": [
+        "Canvas semantics require model vision where no accessible scene graph exists. This smoke does not validate all game buttons.",
+        "Navigation/observation/network smoke only: no spin, purchase or all-feature coverage claimed."
+      ],
+      "navigationError": null,
+      "progress": [
+        {
+          "round": 0,
+          "elapsedMs": 371,
+          "observeMs": 9,
+          "controls": 0,
+          "canvases": 0,
+          "warnings": []
+        },
+        {
+          "round": 1,
+          "elapsedMs": 3672,
+          "observeMs": 609,
+          "controls": 0,
+          "canvases": 0,
+          "warnings": [
+            "Frame 1 unavailable: Frame has no visible bounds",
+            "Frame 2: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+          ]
+        },
+        {
+          "round": 2,
+          "elapsedMs": 6722,
+          "observeMs": 880,
+          "controls": 1,
+          "canvases": 1,
+          "warnings": [
+            "Frame 1 unavailable: Frame has no visible bounds",
+            "Frame 2: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+          ]
+        },
+        {
+          "round": 3,
+          "elapsedMs": 9637,
+          "observeMs": 872,
+          "controls": 1,
+          "canvases": 1,
+          "warnings": [
+            "Frame 1 unavailable: Frame has no visible bounds",
+            "Frame 2: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+          ]
+        }
+      ],
+      "expectedEndpointRequested": true,
+      "endpointEvidence": [
+        {
+          "id": "net-46",
+          "url": "https://oapi.playtechhorizon.com/socket.io/1/",
+          "method": "GET",
+          "status": 200,
+          "resourceType": "xhr",
+          "transport": "http",
+          "startedDateTime": "2026-10-26T18:04:32.250Z",
+          "time": 300.229,
+          "bytes": 71,
+          "frames": 0,
+          "state": "finished",
+          "action": {
+            "id": "action-1793037871463-5",
+            "label": "wait",
+            "timestamp": 1793037871463
+          }
+        },
+        {
+          "id": "net-54",
+          "url": "wss://oapi.playtechhorizon.com/socket.io/1/websocket/{connectionId}",
+          "method": "GET",
+          "status": 0,
+          "resourceType": "websocket",
+          "transport": "ws",
+          "startedDateTime": "2026-10-26T18:04:32.733Z",
+          "time": 285,
+          "bytes": 0,
+          "frames": 4,
+          "state": "closed",
+          "action": {
+            "id": "action-1793037871463-5",
+            "label": "wait",
+            "timestamp": 1793037871463
+          }
+        }
+      ],
+      "expectedEndpointObserved": true,
+      "observation": {
+        "controls": 1,
+        "bySource": {
+          "dom": 1,
+          "engine": 0,
+          "manual": 0
+        },
+        "canvases": 1,
+        "engines": [
+          {
+            "name": "CreateJS",
+            "detectedBy": "global-signature",
+            "sceneAccessible": false,
+            "frameUrl": "https://cachedownload.playtechone.com/ngmdesktop/256/platform/index.html",
+            "frameIndex": 0
+          }
+        ],
+        "needsVision": true,
+        "stable": false,
+        "frames": 2,
+        "warnings": [
+          "Frame 1 unavailable: Frame has no visible bounds",
+          "Frame 2: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+        ]
+      },
+      "images": {
+        "low": {
+          "name": "image_6ce9d95e-3d06-4e25-bc3d-4f935574209b.jpeg",
+          "width": 768,
+          "height": 432,
+          "bytes": 20643
+        },
+        "high": {
+          "name": "image_db536215-846b-4526-b3fd-625e74161406.png",
+          "width": 1280,
+          "height": 720,
+          "bytes": 1623994
+        },
+        "byteReductionPercent": 98.7
+      },
+      "network": {
+        "stats": {
+          "storedEntries": 146,
+          "httpEntries": 145,
+          "webSocketEntries": 1,
+          "frames": 4,
+          "retainedBodyBytes": 2333364,
+          "pending": 0,
+          "inflight": 0,
+          "flushTimeouts": 0,
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 6,
+          "omittedBodies": 0,
+          "bodyErrors": 1,
+          "limits": {
+            "maxEntries": 5000,
+            "maxBodyBytes": 262144,
+            "maxWebSocketFrames": 10000,
+            "maxTotalBodyBytes": 67108864
+          },
+          "captureBodies": "activity"
+        },
+        "activityEntries": 36,
+        "activityHar": "network_45dc3a8d-2e48-487e-b8bc-cbe3c6470eec.har",
+        "metadataHar": "network_33b9e55b-84cb-4fb0-835f-e649ef6c9980.har",
+        "webSocketFrames": 4
+      },
+      "finalUrl": "https://cachedownload.playtechone.com/ngmdesktop/256/platform/index.html",
+      "manualReview": {
+        "screen": "intro",
+        "gameplayVerified": false,
+        "allControlsVerified": false,
+        "screenshot": "docs/evidence/playtech-ngm.jpeg"
+      }
+    },
+    {
+      "target": "playson",
+      "family": "Playson",
+      "game": "25 Cookies Hit the Bonus",
+      "publicLaunchUrl": "https://playson.com/game/{opaqueId}",
+      "startedAt": "2026-10-26T18:04:46.432Z",
+      "status": "external-block",
+      "steps": [],
+      "measurements": {
+        "openMs": 534,
+        "lowScreenshotMs": 66,
+        "highScreenshotMs": 64,
+        "exportMs": 5008,
+        "totalMs": 27966
+      },
+      "limitations": [
+        "Public site returned an access/challenge/region block. No challenge bypass attempted.",
+        "Navigation/observation/network smoke only: no spin, purchase or all-feature coverage claimed."
+      ],
+      "navigationError": null,
+      "observation": {
+        "controls": 2,
+        "bySource": {
+          "dom": 2,
+          "engine": 0,
+          "manual": 0
+        },
+        "canvases": 0,
+        "engines": [],
+        "needsVision": false,
+        "stable": true,
+        "frames": 2,
+        "warnings": []
+      },
+      "expectedEndpointRequested": false,
+      "endpointEvidence": [],
+      "expectedEndpointObserved": false,
+      "images": {
+        "low": {
+          "name": "image_02849350-b9a8-4ee0-96d6-ae0f539f8582.jpeg",
+          "width": 768,
+          "height": 432,
+          "bytes": 6068
+        },
+        "high": {
+          "name": "image_6af891b9-6dfb-43c3-9a78-30bef595f9f6.png",
+          "width": 1280,
+          "height": 720,
+          "bytes": 26794
+        },
+        "byteReductionPercent": 77.4
+      },
+      "network": {
+        "stats": {
+          "storedEntries": 18,
+          "httpEntries": 18,
+          "webSocketEntries": 0,
+          "frames": 0,
+          "retainedBodyBytes": 587594,
+          "pending": 2,
+          "inflight": 2,
+          "flushTimeouts": 1,
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 1,
+          "omittedBodies": 0,
+          "bodyErrors": 0,
+          "limits": {
+            "maxEntries": 5000,
+            "maxBodyBytes": 262144,
+            "maxWebSocketFrames": 10000,
+            "maxTotalBodyBytes": 67108864
+          },
+          "captureBodies": "activity"
+        },
+        "activityEntries": 5,
+        "activityHar": "network_4819946d-592e-4240-9eb4-91b51bb3e549.har",
+        "metadataHar": "network_fe120619-da9f-4047-8fd8-d05d51d5647a.har",
+        "webSocketFrames": 0
+      },
+      "finalUrl": "https://playson.com/game/%7BopaqueId%7D",
+      "manualReview": {
+        "screen": "external-block",
+        "gameplayVerified": false,
+        "allControlsVerified": false
+      }
+    },
+    {
+      "target": "rubyplay",
+      "family": "RubyPlay",
+      "game": "Frankenstein Triple Volt",
+      "publicLaunchUrl": "https://rubyplay.com/games/{opaqueId}/",
+      "startedAt": "2026-10-26T18:03:53.153Z",
+      "status": "game-observed",
+      "steps": [
+        {
+          "kind": "control-click",
+          "label": "YES, I'M 18 YEARS OR OLDER",
+          "source": "dom"
+        },
+        {
+          "kind": "control-click",
+          "label": "Reject All",
+          "source": "dom"
+        },
+        {
+          "kind": "launch-scroll",
+          "deltaY": 480
+        },
+        {
+          "kind": "control-click",
+          "label": "Play Demo",
+          "source": "dom"
+        }
+      ],
+      "measurements": {
+        "openMs": 1270,
+        "observeMs": 12277,
+        "lowScreenshotMs": 2711,
+        "highScreenshotMs": 2781,
+        "exportMs": 285,
+        "totalMs": 46811
+      },
+      "limitations": [
+        "Slow observation: final snapshot uses one sample and makes no temporal stability claim.",
+        "Canvas semantics require model vision where no accessible scene graph exists. This smoke does not validate all game buttons.",
+        "Navigation/observation/network smoke only: no spin, purchase or all-feature coverage claimed."
+      ],
+      "navigationError": null,
+      "progress": [
+        {
+          "round": 0,
+          "elapsedMs": 3165,
+          "observeMs": 717,
+          "controls": 8,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 1,
+          "elapsedMs": 4071,
+          "observeMs": 41,
+          "controls": 15,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 2,
+          "elapsedMs": 4906,
+          "observeMs": 26,
+          "controls": 11,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 3,
+          "elapsedMs": 6605,
+          "observeMs": 98,
+          "controls": 8,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 4,
+          "elapsedMs": 26374,
+          "observeMs": 12277,
+          "controls": 3,
+          "canvases": 1,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters",
+            "Frame 1: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+          ]
+        }
+      ],
+      "expectedEndpointRequested": true,
+      "endpointEvidence": [
+        {
+          "id": "net-142",
+          "url": "https://srv.prrpeu3.com/gameserver/demo",
+          "method": "POST",
+          "status": 200,
+          "resourceType": "xhr",
+          "transport": "http",
+          "startedDateTime": "2026-10-26T18:03:56.727Z",
+          "time": 317.092,
+          "bytes": 927,
+          "frames": 0,
+          "state": "finished",
+          "action": {
+            "id": "action-1793037836372-138",
+            "label": "smoke-public-launch",
+            "timestamp": 1793037836372
+          }
+        }
+      ],
+      "expectedEndpointObserved": true,
+      "observation": {
+        "controls": 3,
+        "bySource": {
+          "dom": 3,
+          "engine": 0,
+          "manual": 0
+        },
+        "canvases": 1,
+        "engines": [],
+        "needsVision": true,
+        "stable": null,
+        "frames": 2,
+        "warnings": [
+          "Frame 0: Visible text output limited to 1000 characters",
+          "Frame 1: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+        ]
+      },
+      "images": {
+        "low": {
+          "name": "image_cf5ced58-3ef2-4174-82e1-80ea146134c6.jpeg",
+          "width": 768,
+          "height": 432,
+          "bytes": 31041
+        },
+        "high": {
+          "name": "image_1f948cb5-5c3e-4955-b9b4-3b1fddc07cd8.png",
+          "width": 1280,
+          "height": 720,
+          "bytes": 1850843
+        },
+        "byteReductionPercent": 98.3
+      },
+      "network": {
+        "stats": {
+          "storedEntries": 1681,
+          "httpEntries": 1681,
+          "webSocketEntries": 0,
+          "frames": 0,
+          "retainedBodyBytes": 1222551,
+          "pending": 0,
+          "inflight": 0,
+          "flushTimeouts": 0,
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 2,
+          "omittedBodies": 4,
+          "bodyErrors": 4,
+          "limits": {
+            "maxEntries": 5000,
+            "maxBodyBytes": 262144,
+            "maxWebSocketFrames": 10000,
+            "maxTotalBodyBytes": 67108864
+          },
+          "captureBodies": "activity"
+        },
+        "activityEntries": 41,
+        "activityHar": "network_20505477-0552-4bcf-8727-277fc0aa0cb5.har",
+        "metadataHar": "network_90ee1d53-6f54-44ab-b6fc-372961e2b7bd.har",
+        "webSocketFrames": 0
+      },
+      "finalUrl": "https://rubyplay.com/games/%7BopaqueId%7D/",
+      "manualReview": {
+        "screen": "intro",
+        "gameplayVerified": false,
+        "allControlsVerified": false,
+        "screenshot": "docs/evidence/rubyplay.jpeg"
+      }
+    },
+    {
+      "target": "elk",
+      "family": "ELK",
+      "game": "Cluster Kingdom",
+      "publicLaunchUrl": "https://www.elk-studios.com/games/cluster-kingdom/",
+      "startedAt": "2026-10-26T18:04:40.356Z",
+      "status": "game-observed",
+      "steps": [
+        {
+          "kind": "control-click",
+          "label": "I ACCEPT",
+          "source": "dom"
+        },
+        {
+          "kind": "control-click",
+          "label": "YES, I AM",
+          "source": "dom"
+        },
+        {
+          "kind": "control-click",
+          "label": "PLAY",
+          "source": "dom"
+        }
+      ],
+      "measurements": {
+        "openMs": 1509,
+        "observeMs": 40,
+        "lowScreenshotMs": 201,
+        "highScreenshotMs": 196,
+        "exportMs": 2392,
+        "totalMs": 16633
+      },
+      "limitations": [
+        "Canvas semantics require model vision where no accessible scene graph exists. This smoke does not validate all game buttons.",
+        "Navigation/observation/network smoke only: no spin, purchase or all-feature coverage claimed."
+      ],
+      "navigationError": null,
+      "progress": [
+        {
+          "round": 0,
+          "elapsedMs": 1751,
+          "observeMs": 13,
+          "controls": 4,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 1,
+          "elapsedMs": 2590,
+          "observeMs": 6,
+          "controls": 3,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 2,
+          "elapsedMs": 3383,
+          "observeMs": 6,
+          "controls": 10,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 3,
+          "elapsedMs": 4759,
+          "observeMs": 22,
+          "controls": 4,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 4,
+          "elapsedMs": 6776,
+          "observeMs": 8,
+          "controls": 4,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 5,
+          "elapsedMs": 8796,
+          "observeMs": 13,
+          "controls": 4,
+          "canvases": 0,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters"
+          ]
+        },
+        {
+          "round": 6,
+          "elapsedMs": 10851,
+          "observeMs": 40,
+          "controls": 4,
+          "canvases": 1,
+          "warnings": [
+            "Frame 0: Visible text output limited to 1000 characters",
+            "Frame 1: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+          ]
+        }
+      ],
+      "expectedEndpointRequested": true,
+      "endpointEvidence": [
+        {
+          "id": "net-47",
+          "url": "https://gc5-stage.contentmedia.eu/capi/10222/play/init",
+          "method": "POST",
+          "status": 200,
+          "resourceType": "xhr",
+          "transport": "http",
+          "startedDateTime": "2026-10-26T18:04:48.863Z",
+          "time": 493.883,
+          "bytes": 3297,
+          "frames": 0,
+          "state": "finished",
+          "action": {
+            "id": "action-1793037887135-45",
+            "label": "wait",
+            "timestamp": 1793037887135
+          }
+        }
+      ],
+      "expectedEndpointObserved": true,
+      "observation": {
+        "controls": 4,
+        "bySource": {
+          "dom": 4,
+          "engine": 0,
+          "manual": 0
+        },
+        "canvases": 1,
+        "engines": [
+          {
+            "name": "PixiJS",
+            "detectedBy": "global-signature",
+            "sceneAccessible": false,
+            "frameUrl": "https://static-stage.contentmedia.eu/ecf3/index.html",
+            "frameIndex": 1
+          }
+        ],
+        "needsVision": true,
+        "stable": true,
+        "frames": 2,
+        "warnings": [
+          "Frame 0: Visible text output limited to 1000 characters",
+          "Frame 1: Canvas coverage is partial: text draws are historical observations; opaque, WebGL, masked and inaccessible scene semantics require vision."
+        ]
+      },
+      "images": {
+        "low": {
+          "name": "image_9fb9b1af-bdaa-4979-a1e3-47c67ee2aeda.jpeg",
+          "width": 768,
+          "height": 432,
+          "bytes": 7717
+        },
+        "high": {
+          "name": "image_9ba8650d-3303-415e-9107-4ad4d378159a.png",
+          "width": 1280,
+          "height": 720,
+          "bytes": 305748
+        },
+        "byteReductionPercent": 97.5
+      },
+      "network": {
+        "stats": {
+          "storedEntries": 89,
+          "httpEntries": 89,
+          "webSocketEntries": 0,
+          "frames": 0,
+          "retainedBodyBytes": 5060038,
+          "pending": 0,
+          "inflight": 0,
+          "flushTimeouts": 0,
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 18,
+          "omittedBodies": 0,
+          "bodyErrors": 2,
+          "limits": {
+            "maxEntries": 5000,
+            "maxBodyBytes": 262144,
+            "maxWebSocketFrames": 10000,
+            "maxTotalBodyBytes": 67108864
+          },
+          "captureBodies": "activity"
+        },
+        "activityEntries": 27,
+        "activityHar": "network_7665b4a5-3e84-4898-844b-6c4ec0a6a9c5.har",
+        "metadataHar": "network_36f2a1e0-449e-48cc-ba48-80098e5e2312.har",
+        "webSocketFrames": 0
+      },
+      "finalUrl": "https://www.elk-studios.com/games/cluster-kingdom/",
+      "manualReview": {
+        "screen": "loading-15-percent",
+        "gameplayVerified": false,
+        "allControlsVerified": false,
+        "screenshot": "docs/evidence/elk.jpeg",
+        "note": "Latest screenshot is loading at 15%; earlier runs 40371059147 and 40372765765 showed the intro arrow. No playable-round validation."
+      }
+    },
+    {
+      "target": "gamesglobal",
+      "family": "Games Global",
+      "game": "Gold Blitz Ultimate",
+      "publicLaunchUrl": "https://www.gamesglobal.com/api/launch/GoldBlitzUltimate",
+      "startedAt": "2026-10-26T18:04:57.390Z",
+      "status": "external-block",
+      "steps": [],
+      "measurements": {
+        "openMs": 1061,
+        "lowScreenshotMs": 49,
+        "highScreenshotMs": 48,
+        "exportMs": 3,
+        "totalMs": 8408
+      },
+      "limitations": [
+        "Public site returned an access/challenge/region block. No challenge bypass attempted.",
+        "Navigation/observation/network smoke only: no spin, purchase or all-feature coverage claimed."
+      ],
+      "navigationError": null,
+      "observation": {
+        "controls": 0,
+        "bySource": {
+          "dom": 0,
+          "engine": 0,
+          "manual": 0
+        },
+        "canvases": 0,
+        "engines": [],
+        "needsVision": false,
+        "stable": true,
+        "frames": 1,
+        "warnings": []
+      },
+      "expectedEndpointRequested": false,
+      "endpointEvidence": [],
+      "expectedEndpointObserved": false,
+      "images": {
+        "low": {
+          "name": "image_5535f080-b053-43c1-a47f-04a8a5727985.jpeg",
+          "width": 768,
+          "height": 432,
+          "bytes": 6977
+        },
+        "high": {
+          "name": "image_db9fd918-ba8e-4d63-9991-26f591ecd850.png",
+          "width": 1280,
+          "height": 720,
+          "bytes": 27557
+        },
+        "byteReductionPercent": 74.7
+      },
+      "network": {
+        "stats": {
+          "storedEntries": 5,
+          "httpEntries": 5,
+          "webSocketEntries": 0,
+          "frames": 0,
+          "retainedBodyBytes": 16482,
+          "pending": 0,
+          "inflight": 0,
+          "flushTimeouts": 0,
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 0,
+          "omittedBodies": 0,
+          "bodyErrors": 0,
+          "limits": {
+            "maxEntries": 5000,
+            "maxBodyBytes": 262144,
+            "maxWebSocketFrames": 10000,
+            "maxTotalBodyBytes": 67108864
+          },
+          "captureBodies": "activity"
+        },
+        "activityEntries": 1,
+        "activityHar": "network_3b9d19c3-bbef-4eef-abaf-ebcfbbdd44f5.har",
+        "metadataHar": "network_93478061-c4f7-48af-bbca-4f09009941c4.har",
+        "webSocketFrames": 0
+      },
+      "finalUrl": "https://redirector32.valueactive.eu/Casino/Default.aspx",
+      "manualReview": {
+        "screen": "external-block",
+        "gameplayVerified": false,
+        "allControlsVerified": false
+      }
+    },
+    {
+      "target": "push",
+      "family": "Push Gaming",
+      "game": "Diamonds 4 The Win",
+      "publicLaunchUrl": "https://www.pushgaming.com/games/play/diamonds-4-win.html",
+      "startedAt": "2026-10-26T18:05:06.161Z",
+      "status": "external-block",
+      "steps": [],
+      "measurements": {
+        "openMs": 795,
+        "observeMs": 32,
+        "lowScreenshotMs": 155,
+        "highScreenshotMs": 180,
+        "exportMs": 6,
+        "totalMs": 8965
+      },
+      "limitations": [
+        "Public site returned an access/challenge/region block. No challenge bypass attempted.",
+        "Navigation/observation/network smoke only: no spin, purchase or all-feature coverage claimed."
+      ],
+      "navigationError": null,
+      "progress": [
+        {
+          "round": 0,
+          "elapsedMs": 1462,
+          "observeMs": 32,
+          "controls": 0,
+          "canvases": 0,
+          "warnings": []
+        }
+      ],
+      "expectedEndpointRequested": false,
+      "endpointEvidence": [],
+      "expectedEndpointObserved": false,
+      "observation": {
+        "controls": 1,
+        "bySource": {
+          "dom": 1,
+          "engine": 0,
+          "manual": 0
+        },
+        "canvases": 0,
+        "engines": [],
+        "needsVision": false,
+        "stable": true,
+        "frames": 3,
+        "warnings": []
+      },
+      "images": {
+        "low": {
+          "name": "image_27a89f12-dbd9-410d-bd3c-2686d7b0750f.jpeg",
+          "width": 768,
+          "height": 432,
+          "bytes": 16356
+        },
+        "high": {
+          "name": "image_497b00fc-a147-4381-8ec7-523d356cf93a.png",
+          "width": 1280,
+          "height": 720,
+          "bytes": 599881
+        },
+        "byteReductionPercent": 97.3
+      },
+      "network": {
+        "stats": {
+          "storedEntries": 28,
+          "httpEntries": 28,
+          "webSocketEntries": 0,
+          "frames": 0,
+          "retainedBodyBytes": 2866,
+          "pending": 0,
+          "inflight": 0,
+          "flushTimeouts": 0,
+          "evictedEntries": 0,
+          "evictedFrames": 0,
+          "droppedFrames": 0,
+          "truncatedBodies": 0,
+          "omittedBodies": 0,
+          "bodyErrors": 2,
+          "limits": {
+            "maxEntries": 5000,
+            "maxBodyBytes": 262144,
+            "maxWebSocketFrames": 10000,
+            "maxTotalBodyBytes": 67108864
+          },
+          "captureBodies": "activity"
+        },
+        "activityEntries": 5,
+        "activityHar": "network_be2f7bd5-0ce6-48ad-a73f-008ebefb3f58.har",
+        "metadataHar": "network_534a04bb-ad99-445a-b09e-f233b6a7f751.har",
+        "webSocketFrames": 0
+      },
+      "finalUrl": "https://www.pushgaming.com/games/play/diamonds-4-win.html",
+      "manualReview": {
+        "screen": "external-block",
+        "gameplayVerified": false,
+        "allControlsVerified": false
+      }
+    }
+  ],
+  "environment": {
+    "ciOS": "ubuntu-24.04",
+    "nodeMajor": 24,
+    "playwright": "1.64.1",
+    "chromium": "156.0.8078.4",
+    "transport": "stdio",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "assessment": {
+    "core": "passed",
+    "liveSurfacesWithExpectedNetwork": 4,
+    "introScreensReviewed": 3,
+    "loadingScreensReviewed": 1,
+    "externalBlocks": 4,
+    "fullGameApproval": false,
+    "workflowConclusion": "failure",
+    "workflowFailureReason": "Both demo groups include externally blocked providers; core job passed."
+  }
+}

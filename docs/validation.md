@@ -1,54 +1,86 @@
 # Validación de UMCP
 
-## Estado
+Código evaluado: [`4044ac0`](https://github.com/Shisetsu-Code/UMCP/commit/4044ac0f3e241371ce18388431bf37a362ecb79c). Fecha: 2026-10-26.
 
-Implementación inicial: [`3d8a35e`](https://github.com/Shisetsu-Code/UMCP/commit/3d8a35ee9b1255e2d726d4731b8deabbaf9e72ca). Primera corrida: [40368852598](https://github.com/Shisetsu-Code/UMCP/actions/runs/40368852598). La [segunda corrida](https://github.com/Shisetsu-Code/UMCP/actions/runs/40371059147) verificó 52 pruebas del núcleo en 5,71 s y cargó las introducciones de Playtech GPAS, Playtech NGM y ELK; se revisaron sus screenshots. Belatra, Playson, Games Global y Push devolvieron bloqueos. RubyPlay inicializó red pero agotó el tiempo sin abrir su popup. La siguiente corrida verifica la corrección del botón declarativo y conserva capturas intermedias.
+**Núcleo: 54/54 pruebas aprobadas, 0 fallos y 0 omitidas.** El [cuarto run de Actions, 40374185931](https://github.com/Shisetsu-Code/UMCP/actions/runs/40374185931), termina globalmente en `failure` por cuatro bloqueos externos; su job de núcleo está aprobado. Cuatro demos aportan canvas y tráfico de inicialización. Su pantalla jugable y sus acciones todavía no están validadas.
 
-## Pruebas locales
+## 1. Núcleo reproducible
 
-Se usa Chromium 156.0.8078.4 correspondiente a Playwright 1.64.1. El ejecutor local requiere una ruta de navegador explícita; la CI instala la distribución fijada de Playwright.
+| Entorno | Aprobadas | Duración | Fallos | Omitidas |
+|---|---:|---:|---:|---:|
+| Local | 54/54 | 9.526 s | 0 | 0 |
+| GitHub Actions | 54/54 | 7.158 s | 0 | 0 |
 
-**53 pruebas locales; 0 fallidas, 0 omitidas** después de la corrección declarativa de RubyPlay. El chequeo de sintaxis también pasó. La corrida anterior de 52 pruebas completó en 8,41 s; los tiempos dependen de esta máquina y no son una garantía de rendimiento de cada juego.
-
-Se verificó con Chromium real el flujo integrado de observación, screenshot reducido, click por coordenadas de imagen, navegación y rechazo de referencias viejas; HTTP/WS de texto/binario; y MCP initialize/list/tools/call/resources por stdio.
+Los [tests de esta versión](https://github.com/Shisetsu-Code/UMCP/tree/4044ac0f3e241371ce18388431bf37a362ecb79c/test) combinan fixtures controlados y Chromium real. Estos tiempos no representan la latencia de un proveedor.
 
 | Grupo | Pruebas | Alcance |
 |---|---:|---|
-| Imágenes | 2 | Escala/recorte, coordenadas, PNG/JPEG/WebP, overlay y límites. |
-| Browser integrado | 3 | Clicks reales, referencia obsoleta, iframe, Shadow DOM, popup, sesión aislada, export y consultas durante long polling. |
-| MCP stdio | 1 | Initialize, listado de 13 herramientas, llamadas, imagen, recursos y validación de inputs. |
-| Red | 21 | HTTP real, JSON/form/XML, errores, redirecciones, WS texto/binario, rechazo403, límites, flush y saneamiento. |
-| Protocolos/CLI | 8 | Ejemplos sintéticos de siete familias, XML anidado, HAR sin frames, CLI y protección de originales. |
-| Evidencia pública | 1 | Exclusión de cuerpos opacos, headers, valores de query e identificadores WS. |
-| Evidencia de demo | 1 | Rechaza respuestas 403, peticiones pendientes, recursos estáticos, coincidencias solo en query y WS rechazados. |
-| UI | 16 | DOM/listeners/oclusiones, interacciones declarativas delegadas, iframes anidados/escalados/reflejados, escenas, estabilidad, texto visible acotado y semántica de instrumentación. |
+| Imágenes | 2 | Escala, recorte, coordenadas, formatos y overlay. |
+| Browser integrado | 3 | Clicks, referencias obsoletas, iframes, sesiones y long polling. |
+| MCP stdio | 1 | Inicialización, herramientas, llamadas, imágenes, recursos y entradas. |
+| Red | 21 | HTTP, JSON/form/XML, errores, redirecciones, WS, límites, flush y saneamiento. |
+| Protocolos/CLI | 8 | Siete familias sintéticas, XML anidado, HAR, duplicados y protección de originales. |
+| Evidencia pública | 1 | Exclusión de cuerpos, headers, queries e identificadores sensibles. |
+| Evidencia de demo | 1 | Exclusión de falsos positivos: 403, pendientes, estáticos y WS rechazados. |
+| UI | 17 | Visibilidad, oclusión, eventos delegados, iframes, escenas, estabilidad e instrumentación. |
+| **Total** | **54** | **0 fallos; 0 omitidas.** |
 
-## Revisión y correcciones
+## 2. Demos: resultado final y revisión visual
 
-La revisión independiente reprodujo tres defectos y confirmó su corrección:
+Fuente durable: [resultados, pasos y métricas en JSON](evidence/validation-results.json). Los nombres enlazados abren las capturas revisadas. HTTP cuenta entradas de red, incluidos recursos; WS cuenta **frames**, no conexiones ni apuestas. El tiempo corresponde al smoke completo.
 
-1. Iframe reflejado: los bounding boxes positivos daban un centro incorrecto. Ahora se rechazan reflejos y transformaciones no soportadas del iframe o sus ancestros, indicando que hace falta visión.
-2. WebSocket rechazado: un evento de creación no prueba un upgrade HTTP101. Se conserva status desconocido, evidencia de frames y estado de error; se verificó con un servidor local que rechaza el handshake con403.
-3. Artefactos públicos: los cuerpos binarios no inspeccionables no deben subirse bajo una promesa genérica de redacción. La CI usa un directorio privado temporal y publica únicamente HAR reconstruidos desde una lista de metadatos permitidos.
+| Target | Pantalla o bloqueo confirmado | HTTP | Frames WS | Tiempo |
+|---|---|---:|---:|---:|
+| [Playtech GPAS](evidence/playtech-gpas.jpeg) | **INTRO**, flecha Play; canvas + inicialización | 165 | 13 | 25.134 s |
+| [Playtech NGM](evidence/playtech-ngm.jpeg) | **INTRO**, Continue; canvas + inicialización | 145 | 4 | 14.927 s |
+| [RubyPlay](evidence/rubyplay.jpeg) | **INTRO**, PRESS ANYWHERE TO CONTINUE; popup abierto, canvas + inicialización | 1681 | 0 | 46.811 s |
+| [ELK](evidence/elk.jpeg) | **Canvas + inicialización; carga al 15%** | 89 | 0 | 16.633 s |
+| Belatra | Bloqueo de Cloudflare | 18 | 0 | 27.971 s |
+| Playson | Bloqueo de Cloudflare | 18 | 0 | 27.966 s |
+| Games Global | Acceso bloqueado | 5 | 0 | 8.408 s |
+| Push Gaming | Geobloqueo | 28 | 0 | 8.965 s |
 
-La revisión final aceptó estas correcciones; las pruebas de demos reales son un control adicional y distinto.
+Los cuatro primeros reciben el estado automático `game-observed`: significa superficie visible y evidencia de red, y necesita esta revisión visual para precisar el alcance. **No equivale a gameplay validado ni a todos los botones reconocidos.** ELK mostró una introducción en ejecuciones anteriores; su última captura sólo acredita carga al 15%.
 
-El intento local contra Push Gaming encontró `ERR_CERT_AUTHORITY_INVALID` en la red del ejecutor y no llegó a cargar el juego. Esto se conserva como limitación del entorno, sin deshabilitar la validación TLS del MCP. La prueba de proveedores se realiza también desde GitHub Actions.
+RubyPlay completó `YES, I'M 18 YEARS OR OLDER`, `Reject All`, scroll de **480 px** y `Play Demo`, obteniendo **un canvas visible**. Antes, su iframe inicializaba red dentro de un popup oculto: un HTTP 200 aislado no demostraba visibilidad.
 
-### Correcciones surgidas de las demos
+## 3. Imágenes y estabilidad medidas
 
-- Las consultas `stats`, `query`, `detail` y `endpoints` ya no esperan al cierre de peticiones largas. `flush` y exportación conservan la espera explícita y acotada.
-- La observación incluye texto renderizado acotado por frame. Su truncado no convierte controles estáticos en inestables.
-- GPAS conserva los parámetros públicos del fragmento de su URL, incluido `real=0`.
-- El smoke lee las pantallas de bloqueo dentro de iframes y reconoce los controles de edad/cookies/PLAY observados en ELK.
-- El éxito del smoke exige un canvas y evidencia de endpoint: HTTP terminado con 2xx y tipo de actividad, o WS con frames. Una solicitud pendiente o un canvas aislado no aprueba el juego.
-- CI fija Ubuntu 24.04, instala Chromium sin volver a descargar todos los paquetes del sistema, agrupa las demos en dos jobs y limita cada target a 180 s.
-- RubyPlay declara su botón `Play Demo` como un `span` con `data-interactions`, manejado por un listener delegado. El detector ahora reconoce esa declaración acotada, con menor confianza. La regresión prueba un click real que abre un popup y pasa de cero a un canvas visible.
-- El smoke conserva screenshots tempranos y observaciones parciales. Permite scroll para alcanzar el launcher RubyPlay y reduce el muestreo final cuando la observación es lenta, sin afirmar estabilidad temporal en ese caso.
+Comparación de la captura PNG de **1280×720** con la JPEG de **768×432**, según el JSON:
 
-## Criterios
+| Demo | PNG, bytes | JPEG, bytes | Reducción |
+|---|---:|---:|---:|
+| GPAS | 1725013 | 32055 | 98.1% |
+| NGM | 1623994 | 20643 | 98.7% |
+| RubyPlay | 1850843 | 31041 | 98.3% |
+| ELK | 305748 | 7717 | 97.5% |
 
-- Núcleo: suite reproducible sin fallos ni omisiones y revisión de código.
-- Proveedor: screenshot de canvas real, informe de controles y tráfico observado. Una página de catálogo, challenge, error TLS o sólo HTML no constituye un juego verificado.
-- Semántica de interfaz: las escenas de prueba validan adaptadores; se reportará por separado lo observado en demos públicas. Ninguna corrida demuestra universalidad del detector.
-- Red: los HAR originales no contienen frames WS; los frames se verifican mediante captura viva en el servidor de prueba y, si se obtiene acceso, las demos.
+Son medidas de estas imágenes; combinan reducción de resolución y compresión JPEG. No constituyen una garantía universal de tamaño o calidad.
+
+GPAS y RubyPlay tienen `stable:null`: la captura final usa una muestra y **no afirma estabilidad temporal**. NGM tiene `stable:false`. ELK tiene `stable:true` para la muestra observada, pero eso no demuestra carga completa. Los cuatro reportan `needsVision:true` y cero controles detectados desde una escena de motor; los controles DOM observados no cubren automáticamente los controles internos del canvas.
+
+## 4. Correcciones e historial
+
+Correcciones incluidas y cubiertas por regresiones:
+
+- Consultas de red sin esperar a que cierre long polling; `flush` y exportación mantienen espera acotada.
+- WS rechazados sin inventar HTTP 101; evidencia de demo basada en actividad terminada y frames.
+- Transformaciones no soportadas de iframes identificadas; **iframes ocultos descartados tempranamente antes de inspeccionar su contenido**.
+- Lectura acotada de texto e interacciones declarativas `data-interactions`, incluidos clicks delegados sobre `span`.
+- Fragmento público de GPAS preservado, incluido `real=0`; scroll y checkpoints para abrir el launcher RubyPlay.
+- Artefactos públicos construidos con metadatos permitidos, excluyendo cuerpos opacos y credenciales.
+
+El [run 1](https://github.com/Shisetsu-Code/UMCP/actions/runs/40368852598) inició la validación. El [run 2](https://github.com/Shisetsu-Code/UMCP/actions/runs/40371059147) pasó 52 pruebas del núcleo y encontró el timeout de RubyPlay a los 180 s. El [run 3](https://github.com/Shisetsu-Code/UMCP/actions/runs/40372765765) pasó 53 pruebas; estas iteraciones llevaron a las correcciones de launcher y observación que verifica el run final.
+
+## 5. Límites y pruebas pendientes
+
+Encontrar canvas o firmas de motor no demuestra interpretación semántica universal. Los HAR originales carecen de frames WS; la captura viva constituye evidencia distinta. La captura está acotada y sus conteos no garantizan cuerpos completos.
+
+Para ampliar la cobertura se requiere:
+
+1. Repetir los cuatro proveedores bloqueados desde un entorno local con acceso permitido, TLS válido y sesiones frescas.
+2. Llegar a la pantalla jugable de cada demo, incluida la carga completa de ELK; revisar controles, límites, oclusiones y centros de click.
+3. Cuando se prueben acciones autorizadas de demo, correlacionarlas con HTTP/WS y comprobar su estado final. Giros, compras, opciones y continuaciones necesitan cobertura explícita por separado.
+4. Registrar por pantalla qué reconoce el detector, qué necesita visión y qué sigue sin comprobarse.
+
+La validación del núcleo queda cerrada; la cobertura real de proveedores conserva estos límites.
